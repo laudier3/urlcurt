@@ -45,7 +45,7 @@ router.post('/api/login', async (req: any, res: any) => {
       maxAge: 3600000,
     });
 
-    res.sendStatus(200);
+    res.status(200).json({token: token});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro no login' });

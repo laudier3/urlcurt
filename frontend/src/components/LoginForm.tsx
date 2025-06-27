@@ -18,7 +18,7 @@ const LoginForm: React.FC<Props> = ({ onLogin }) => {
 
     try {
       await axios.post(
-        'http://localhost:4000/api/login',
+        'http://urls.hubt.site/api/login',
         { email, password },
         { withCredentials: true }
       );

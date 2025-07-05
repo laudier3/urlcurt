@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://urls.hubt.site/api',
+  baseURL: 'https://urls.hubt.site/api',
   withCredentials: true
 });
 

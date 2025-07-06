@@ -66,7 +66,7 @@ const UrlList: React.FC<Props> = ({ urls }) => {
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
-          const shortUrl = `http://urls.hubt.site/${url.slug}`;
+          const shortUrl = `https://api.hubt.site/api/${url.slug}`;
           const isExpanded = expandedUrlId === url.id;
           const isLoading = loadingTraffic === url.id;
           const history = trafficData[url.id];

@@ -16,8 +16,13 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
     try {
       const res = await api.post('/register', { email, password });
       onRegister(res.data.token);
-    } catch {
-      setError('Erro ao registrar. Talvez o usuário já exista.');
+    } catch (err: any) {
+      console.error(err);
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else {
+        setError('Erro inesperado ao registrar.');
+      }
     }
   }
 

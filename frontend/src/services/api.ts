@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://urls.hubt.site/api',
+  baseURL: 'https://app3.apinonshops.store/api',
   withCredentials: true
 });
 

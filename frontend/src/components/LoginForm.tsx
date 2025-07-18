@@ -12,6 +12,23 @@ const LoginForm: React.FC<Props> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  function getCookie(name: string): string | null {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+}
+
+// Verificando o token
+const token = getCookie('token');  // Substitua 'token' pelo nome real do cookie que armazena o token
+
+if (token) {
+  console.log('Token encontrado:', token);
+} else {
+  console.log('Token não encontrado');
+}
+
+
   const navigate = useNavigate(); // Usando o hook para navegação
 
   async function handleSubmit(e: React.FormEvent) {

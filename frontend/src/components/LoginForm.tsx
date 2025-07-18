@@ -17,25 +17,14 @@ const LoginForm: React.FC<Props> = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      // Realizando o login
-      const response = await axios.post(
-        'http://app3.apinonshops.store/api/login',
+      await axios.post(
+        'https://app3.apinonshops.store/api/login',
         { email, password },
-        { withCredentials: true } // Fazendo o login com cookies
+        { withCredentials: true }
       );
-
-      // Verifique se o login foi bem-sucedido
-      console.log('Login bem-sucedido', response);
-      
-      onLogin(); // Sinaliza login bem-sucedido
+      onLogin(); // sinaliza login bem-sucedido
     } catch (err: any) {
-      if (err.response) {
-        // Exibe o erro retornado pelo servidor
-        setError(err.response?.data?.error || 'Erro no login');
-      } else {
-        // Exibe erro se não houver resposta do servidor
-        setError('Erro de conexão');
-      }
+      setError(err.response?.data?.message || 'Erro no login');
     } finally {
       setLoading(false);
     }

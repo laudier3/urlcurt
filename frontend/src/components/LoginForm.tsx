@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Importa o hook useNavigate
 
 interface Props {
   onLogin(): void;
@@ -11,18 +12,25 @@ const LoginForm: React.FC<Props> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate(); // Usando o hook para navegação
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
+      // Envia o login para o backend
       await axios.post(
         'https://app3.apinonshops.store/api/login',
         { email, password },
         { withCredentials: true }
       );
+
       onLogin(); // sinaliza login bem-sucedido
+
+      // Navega para a página /app após o login bem-sucedido
+      navigate('/app'); // Usando o useNavigate para redirecionar para /app
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erro no login');
     } finally {

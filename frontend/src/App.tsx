@@ -1,4 +1,3 @@
-// App.tsx
 import React, { useState, useEffect, ReactNode } from 'react';
 import {
   BrowserRouter as Router,

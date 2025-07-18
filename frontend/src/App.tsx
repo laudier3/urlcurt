@@ -188,6 +188,19 @@ const App: React.FC = () => {
         />
 
         {/* Rota coringa para redirecionar */}
+        <Route
+          path="/url-form"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/app" replace />
+            ) : (
+              <div style={{ marginTop: 50 }}>
+                <h2>Você já está logado! Redirecionando para a página principal...</h2>
+              </div>
+            )
+          }
+        />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

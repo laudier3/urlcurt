@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Importa o hook useNavigate
+import api from '../services/api';
 
 interface Props {
   onLogin(): void;
@@ -38,8 +38,7 @@ if (token) {
 
     try {
       // Envia o login para o backend
-      await axios.post(
-        'https://app3.apinonshops.store/api/login',
+      await api.post('/login',
         { email, password },
         { withCredentials: true }
       );
@@ -49,7 +48,7 @@ if (token) {
       // Navega para a página /app após o login bem-sucedido
       navigate('/app'); // Usando o useNavigate para redirecionar para /app
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro no login');
+      setError(err.response?.data?.message || 'Usuário não existe');
     } finally {
       setLoading(false);
     }

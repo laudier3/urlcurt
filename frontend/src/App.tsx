@@ -11,6 +11,7 @@ import RegisterForm from './components/RegisterForm';
 import UrlForm from './components/UrlForm';
 import UrlList from './components/UrlList';
 import LandingPage from './components/LandingPage';
+import {UrlManager} from './components/UrlManager'; // ✅ NOVO IMPORT
 import api from './services/api';
 import { useAuth } from './hooks/useAuth';
 
@@ -109,7 +110,7 @@ const App: React.FC = () => {
             isAuthenticated ? (
               <Navigate to="/app" replace />
             ) : (
-              <div className="container" style={{ maxWidth: 400, margin: 'auto', marginTop: "10%"  }}>
+              <div className="container" style={{ maxWidth: 400, margin: 'auto', marginTop: "10%" }}>
                 <LoginForm onLogin={() => window.location.assign('/app')} />
                 <p style={{ marginTop: 12 }}>
                   Não tem conta?{' '}
@@ -123,6 +124,17 @@ const App: React.FC = () => {
                     }}
                   >
                     Registre-se
+                  </button>
+                  <button
+                    onClick={() => window.location.assign('/')}
+                    style={{
+                      background: 'none',
+                      border: 'solid 1px',
+                      color: '#4f46e5',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Voltar
                   </button>
                 </p>
               </div>
@@ -171,6 +183,16 @@ const App: React.FC = () => {
                   }}
                 >
                   <h1>Encurtador de URL</h1>
+                  <a href="/manager" className='a' style={
+                    { 
+                      width: 'auto', 
+                      padding: '0.5rem 1rem',
+                      textDecoration: "none"
+                    }
+                  }
+                  >
+                    {loggingOut ? 'Carregando...' : 'Gerenciar URLS'}
+                  </a>
                   <button
                     onClick={handleLogout}
                     disabled={loggingOut}
@@ -186,8 +208,41 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+        
 
-        {/* Rota coringa para redirecionar */}
+        {/* ✅ NOVA ROTA PROTEGIDA: /manager */}
+        <Route
+          path="/manager"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <div className="container">
+                <header
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 24,
+                  }}
+                >
+                  <h1>Gerenciador de URLs</h1>
+                  <a href='/app' className='a' style={
+                    { 
+                      width: 'auto', 
+                      padding: '0.5rem 1rem',
+                      textDecoration: "none",
+                    }
+                  }
+                  >
+                    {loggingOut ? 'Saindo...' : 'Voltar'}
+                  </a>
+                </header>
+
+                <UrlManager />
+              </div>
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/url-form"
           element={

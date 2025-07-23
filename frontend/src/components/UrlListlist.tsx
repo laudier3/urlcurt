@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Alert } from "@mui/material";
 import {
   LineChart,
   Line,
@@ -28,7 +27,7 @@ type Props = {
   urls: Url[];
 };
 
-const UrlList: React.FC<Props> = ({ urls }) => {
+export const UrlListlist: React.FC<Props> = ({ urls }) => {
   const [expandedUrlId, setExpandedUrlId] = useState<number | null>(null);
   const [trafficData, setTrafficData] = useState<Record<number, TrafficEntry[]>>({});
   const [loadingTraffic, setLoadingTraffic] = useState<number | null>(null);
@@ -67,7 +66,7 @@ const UrlList: React.FC<Props> = ({ urls }) => {
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
-          const shortUrl = `http://localhost:4000/api/${url.slug}`;
+          const shortUrl = `https://app3.apinonshops.store/api/${url.slug}`;
           const isExpanded = expandedUrlId === url.id;
           const isLoading = loadingTraffic === url.id;
           const history = trafficData[url.id];
@@ -82,7 +81,7 @@ const UrlList: React.FC<Props> = ({ urls }) => {
               }}
             >
               <div>
-                <Alert severity="success"> URL encurtada:{" "} 
+                <strong>Encurtada:</strong>{' '}
                 <a href={shortUrl} target="_blank" rel="noopener noreferrer">
                   {shortUrl}
                 </a>{' '}
@@ -101,8 +100,46 @@ const UrlList: React.FC<Props> = ({ urls }) => {
                 >
                   {copiedUrlId === url.id ? 'Copiado!' : 'Copiar'}
                 </button>
-               </Alert>
               </div>
+
+              <div className='textos'>
+                <strong>Original:</strong>{' '}
+                <a href={url.original} target="_blank" rel="noopener noreferrer">
+                  {url.original}
+                </a>
+              </div>
+
+              <div>
+                <strong>Visitas totais:</strong> {url.visits}
+              </div>
+
+              <div>
+                <strong>Criada em:</strong> {new Date(url.createdAt).toLocaleString()}
+              </div>
+
+              <button
+                style={{
+                  marginTop: 10,
+                  backgroundColor: '#4f46e5',
+                  color: 'white',
+                  border: 'none',
+                  padding: '6px 12px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (isExpanded) {
+                    setExpandedUrlId(null);
+                  } else if (!trafficData[url.id]) {
+                    fetchTrafficData(url.id);
+                  } else {
+                    setExpandedUrlId(url.id);
+                  }
+                }}
+              >
+                {isExpanded ? 'Ocultar tráfego' : isLoading ? 'Carregando...' : 'Ver tráfego'}
+              </button>
+
               {isExpanded && history && (
                 <div
                   style={{
@@ -139,5 +176,3 @@ const UrlList: React.FC<Props> = ({ urls }) => {
     </div>
   );
 };
-
-export default UrlList;

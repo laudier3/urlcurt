@@ -67,7 +67,7 @@ const UrlList: React.FC<Props> = ({ urls }) => {
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
-          const shortUrl = `http://localhost:4000/api/${url.slug}`;
+          const shortUrl = `https://app3.apinonshops.store/api/${url.slug}` //`http://localhost:4000/api/${url.slug}`;
           const isExpanded = expandedUrlId === url.id;
           const isLoading = loadingTraffic === url.id;
           const history = trafficData[url.id];

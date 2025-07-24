@@ -8,6 +8,7 @@ const app = express();
 app.use(cors({
   origin: 'http://localhost:3000', // seu frontend
   credentials: true,
+  methods: 'GET,PUT,POST,OPTIONS,DELETE'
 }));
 app.use(express.json());
 app.use(cookieParser());

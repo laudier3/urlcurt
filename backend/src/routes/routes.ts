@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import validUrl from 'valid-url';
 import { hashPassword, comparePassword, generateToken } from '../services/auth';
 import { authMiddleware, AuthRequest } from '../middleware/authMiddleware';
+import geoip from 'geoip-lite';
 import twilio from 'twilio';
 
 const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -38,6 +39,7 @@ router.post('/api/register', async (req: any, res: any) => {
     // Verifica se o usuário já existe
     const exists = await prisma.user.findUnique({ where: { email } });
     if (exists) {
+      //console.log('Usuário já existe com este email!')
       return res.status(400).json({ error: 'Usuário já existe com este email!' });
     }
 
@@ -61,8 +63,8 @@ router.post('/api/register', async (req: any, res: any) => {
     // Retornar o token para o frontend
     res.status(201).json({ token });
   } catch (err) {
-    console.error('Erro no cadastro:', err);
-    res.status(500).json({ error: 'Erro no servidor, tente novamente mais tarde' });
+    //console.error('Esse número de telefone já ta sendo usado por outro usuário, tente outro.:', err);
+    res.status(500).json({ error: 'Esse número de telefone já ta sendo usado por outro usuário, tente outro.' });
   }
 });
 
@@ -102,11 +104,17 @@ router.post('/api/login', async (req: any, res: any) => {
     if (!match) return res.status(401).json({ error: 'Usuário ou senha incorretos' });
 
     const token = generateToken({ id: user.id, email: user.email });
-    res.cookie('token', token, {
+    /*res.cookie('token', token, {
       httpOnly: true,
       secure: false, // true em produção com HTTPS
       sameSite: 'lax',
       maxAge: 3600000,
+    });*/
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true, // true em prod
+      sameSite: 'none', // ou 'none' se domínios diferentes
+      maxAge: 3600000, // 1 hora
     });
 
     res.status(200).json({token: token});
@@ -114,6 +122,39 @@ router.post('/api/login', async (req: any, res: any) => {
     console.error(err);
     res.status(500).json({ error: 'Erro no login' });
   }
+});
+
+// Na sua rota de redirecionamento:
+router.get('/:slug', async (req: any, res: any) => {
+  const slug = req.params.slug;
+  const ip = req.headers['x-forwarded-for']?.toString()?.split(',')[0] ||
+             req.socket.remoteAddress || '';
+  const geo = geoip.lookup(ip) || { country: null, region: null };
+
+  const url = await prisma.url.findUnique({ where: { slug } });
+  if (!url) return res.status(404).send('URL não encontrada');
+
+  await prisma.visit.create({
+    data: { urlId: url.id, country: geo.country, region: geo.region },
+  });
+
+  await prisma.url.update({ where: { id: url.id }, data: { visits: { increment: 1 } } });
+
+  res.redirect(url.original);
+});
+
+router.get('/api/urls/:id/geo', authMiddleware, async (req: any, res: any) => {
+  const urlId = Number(req.params.id);
+  const userId = req.userId!;
+  const url = await prisma.url.findUnique({ where: { id: urlId } });
+  if (!url || url.userId !== userId) return res.status(404).json({ error: 'URL não encontrada' });
+
+  const geo = await prisma.visit.groupBy({
+    by: ['country'],
+    where: { urlId },
+    _count: { country: true },
+  });
+  res.json(geo.map(g => ({ country: g.country || 'Unknown', count: g._count.country })));
 });
 
 // --- Verifica usuário logado ---
@@ -133,7 +174,7 @@ router.post('/api/logout', (_req: any, res: any) => {
 });
 
 // --- Encurtar URL ---
-router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
+/*router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
   const { originalUrl, customSlug } = req.body;
   if (!validUrl.isWebUri(originalUrl)) return res.status(400).json({ error: 'URL inválida' });
 
@@ -163,7 +204,49 @@ router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
     console.error(err);
     res.status(500).json({ error: 'Erro ao salvar URL' });
   }
+});*/
+
+router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
+  const { originalUrl, customSlug } = req.body;
+  if (!validUrl.isWebUri(originalUrl)) {
+    return res.status(400).json({ error: 'URL inválida' });
+  }
+
+  const userId = req.userId!;
+
+  try {
+    // 🔒 Verifica se o usuário já tem 10 URLs
+    const count = await prisma.url.count({ where: { userId } });
+    if (count >= 10) {
+      return res.status(403).json({ error: 'Limite de 3 URLs atingido. Exclua uma para adicionar outra.' });
+    }
+
+    let slug = customSlug?.trim() ?? '';
+    if (slug) {
+      const exists = await prisma.url.findUnique({ where: { slug } });
+      if (exists) return res.status(400).json({ error: 'Slug personalizado já existe' });
+    } else {
+      const generateSlug = () => {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      };
+      do {
+        slug = generateSlug();
+      } while (await prisma.url.findUnique({ where: { slug } }));
+    }
+
+    const shortUrlFull = `${process.env.BASE_URL || 'http://localhost:4000'}/${slug}`;
+    const url = await prisma.url.create({
+      data: { original: originalUrl, slug, shortUrl: shortUrlFull, userId },
+    });
+
+    res.json(url);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao salvar URL' });
+  }
 });
+
 
 // --- Deletar URL ---
 router.delete('/api/urls/:id', authMiddleware, async (req: AuthRequest, res: any) => {

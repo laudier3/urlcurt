@@ -21,9 +21,11 @@ model User {
 
 model Visit {
   id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
   url       Url      @relation(fields: [urlId], references: [id])
   urlId     Int
-  timestamp DateTime @default(now())
+  country   String?  
+  region    String?  
 }
 
 model Url {

@@ -17,7 +17,6 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [phone, setPhone] = useState('');
   const [age, setAge] = useState<number | string>('');
   const [error, setError] = useState('');
@@ -80,50 +79,26 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
         required
       />
 
-      {/* Input senha com olho */}
-      <div style={{ position: 'relative', marginBottom: '1rem' }}>
+      <div style={{ position: 'relative' }}>
         <input
           type={showPassword ? 'text' : 'password'}
           placeholder="Senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ paddingRight: '2.5rem', width: '100%' }}
         />
-        <span
-          onClick={() => setShowPassword((prev) => !prev)}
-          style={{
-            position: 'absolute',
-            right: '10px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            cursor: 'pointer',
-            color: '#888',
-            userSelect: 'none',
-          }}
-          aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') setShowPassword((prev) => !prev);
-          }}
-        >
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
-        </span>
       </div>
 
-      {/* Input confirmar senha com olho */}
-      <div style={{ position: 'relative', marginBottom: '1rem' }}>
+      <div style={{ position: 'relative' }}>
         <input
-          type={showConfirmPassword ? 'text' : 'password'}
+          type={showPassword ? 'text' : 'password'}
           placeholder="Confirme a Senha"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          style={{ paddingRight: '2.5rem', width: '100%' }}
         />
         <span
-          onClick={() => setShowConfirmPassword((prev) => !prev)}
+          onClick={() => setShowPassword(prev => !prev)}
           style={{
             position: 'absolute',
             right: '10px',
@@ -131,18 +106,20 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
             transform: 'translateY(-50%)',
             cursor: 'pointer',
             color: '#888',
-            userSelect: 'none',
-          }}
-          aria-label={showConfirmPassword ? 'Ocultar senha' : 'Mostrar senha'}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') setShowConfirmPassword((prev) => !prev);
           }}
         >
-          {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
         </span>
+
       </div>
+
+      <button
+        type="button"
+        onClick={() => setShowPassword((prev) => !prev)}
+        style={{ marginBottom: '10px' }}
+      >
+        {showPassword ? 'Ocultar Senhas' : 'Mostrar Senhas'}
+      </button>
 
       <input
         type="text"

@@ -62,11 +62,11 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
 
   return (
     <div>
-      <h2>Suas URLs</h2>
+      <h2>Suas URLs no plano Free tem 10</h2>
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
-          const shortUrl = `https://app3.apinonshops.store/api/${url.slug}`;
+          const shortUrl = `https://app3.apinonshops.store/${url.slug}`;
           const isExpanded = expandedUrlId === url.id;
           const isLoading = loadingTraffic === url.id;
           const history = trafficData[url.id];

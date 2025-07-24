@@ -237,7 +237,7 @@ const App: React.FC = () => {
                   </a>
                 </header>
 
-                <UrlManager />
+                <UrlManager /> {/*urls={urls}*/}
               </div>
             </ProtectedRoute>
           }

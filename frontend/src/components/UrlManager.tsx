@@ -19,7 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { UrlListlist } from "./UrlListlist"; // seu componente de listagem
 
-axios.defaults.baseURL = "https://app3.apinonshops.store";
+axios.defaults.baseURL = "http://localhost:4000";
 axios.defaults.withCredentials = true;
 
 interface UrlData {
@@ -28,6 +28,10 @@ interface UrlData {
   slug: string;
   visits: number;    // ajustei para ter compatibilidade com o gráfico
   createdAt: string; // idem
+}
+
+interface GetUrlsResponse {
+  urls: UrlData[];
 }
 
 export const UrlManager: React.FC = () => {
@@ -40,7 +44,7 @@ export const UrlManager: React.FC = () => {
   useEffect(() => {
     const fetchUrls = async () => {
       try {
-        const res = await axios.get("/api/urls");
+        const res = await axios.get<GetUrlsResponse>("/api/urls");
         setUrls(res.data.urls);
       } catch (err: any) {
         setError(err.response?.data?.error || "Erro ao buscar URLs");
@@ -76,7 +80,7 @@ export const UrlManager: React.FC = () => {
   const handleSave = async (id: number) => {
     try {
       const updated = updatedUrls[id];
-      const res = await axios.put(`/api/urls/${id}`, {
+      const res = await axios.put<UrlData>(`/api/urls/${id}`, {
         originalUrl: updated.original,
         shortSlug: updated.slug,
       });
@@ -100,17 +104,6 @@ export const UrlManager: React.FC = () => {
       alert("Erro ao deletar URL.");
     }
   };
-
-  /*
-  style={
-    {
-      overflow: "hidden",
-      maxWidth: "600px",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap"
-    }
-  }
-  */
 
   return (
     <>

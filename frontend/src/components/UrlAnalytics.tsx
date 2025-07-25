@@ -1,4 +1,3 @@
-// src/components/UrlAnalytics.tsx
 import React, { useEffect, useState } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -31,8 +30,8 @@ export const UrlAnalytics: React.FC<Props> = ({ urlId }) => {
     const fetchAnalytics = async () => {
       try {
         const [trafficRes, geoRes] = await Promise.all([
-          axios.get(`/api/urls/${urlId}/traffic`, { withCredentials: true }),
-          axios.get(`/api/urls/${urlId}/geo`, { withCredentials: true }),
+          axios.get<TrafficEntry[]>(`/api/urls/${urlId}/traffic`, { withCredentials: true }),
+          axios.get<GeoEntry[]>(`/api/urls/${urlId}/geo`, { withCredentials: true }),
         ]);
         setTraffic(trafficRes.data);
         setGeo(geoRes.data);

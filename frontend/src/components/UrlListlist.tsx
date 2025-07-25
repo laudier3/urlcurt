@@ -42,12 +42,11 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
   const fetchTrafficData = async (urlId: number) => {
     setLoadingTraffic(urlId);
     try {
-      const res = await api.get(`/urls/${urlId}/traffic`, { withCredentials: true });
-      const formatted = res.data.map((entry: any) => ({
-        date: entry.date,
-        count: entry.count,
-      }));
-      setTrafficData((prev) => ({ ...prev, [urlId]: formatted }));
+      const res = await api.get<TrafficEntry[]>(`/urls/${urlId}/traffic`, {
+        withCredentials: true,
+      });
+
+      setTrafficData((prev) => ({ ...prev, [urlId]: res.data }));
       setExpandedUrlId(urlId);
     } catch (err) {
       console.error('Erro ao buscar dados de tráfego', err);
@@ -62,11 +61,11 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
 
   return (
     <div>
-      <h2>Suas URLs no plano Free tem 10</h2>
+      <h2>Suas URLs no plano Free</h2>
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
-          const shortUrl = `https://app3.apinonshops.store/${url.slug}`;
+          const shortUrl = `http://localhost:4000/${url.slug}`;
           const isExpanded = expandedUrlId === url.id;
           const isLoading = loadingTraffic === url.id;
           const history = trafficData[url.id];
@@ -102,7 +101,7 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
                 </button>
               </div>
 
-              <div className='textos'>
+              <div className="textos">
                 <strong>Original:</strong>{' '}
                 <a href={url.original} target="_blank" rel="noopener noreferrer">
                   {url.original}

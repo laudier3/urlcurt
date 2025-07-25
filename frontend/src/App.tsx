@@ -11,10 +11,11 @@ import RegisterForm from './components/RegisterForm';
 import UrlForm from './components/UrlForm';
 import UrlList from './components/UrlList';
 import LandingPage from './components/LandingPage';
-import {UrlManager} from './components/UrlManager'; // ✅ NOVO IMPORT
+import { UrlManager } from './components/UrlManager';
 import api from './services/api';
 import { useAuth } from './hooks/useAuth';
 
+// Tipos
 type Url = {
   id: number;
   original: string;
@@ -22,6 +23,10 @@ type Url = {
   visits: number;
   createdAt: string;
 };
+
+interface UrlResponse {
+  urls: Url[];
+}
 
 type ProtectedRouteProps = {
   isAuthenticated: boolean;
@@ -53,7 +58,7 @@ const App: React.FC = () => {
     async function fetchUrls() {
       setLoadingUrls(true);
       try {
-        const res = await api.get('/urls', { withCredentials: true });
+        const res = await api.get<UrlResponse>('/urls', { withCredentials: true });
         setUrls(res.data.urls);
       } catch (err) {
         console.error('Erro ao buscar URLs', err);
@@ -74,7 +79,7 @@ const App: React.FC = () => {
   async function handleNewUrl() {
     setLoadingUrls(true);
     try {
-      const res = await api.get('/urls', { withCredentials: true });
+      const res = await api.get<UrlResponse>('/urls', { withCredentials: true });
       setUrls(res.data.urls);
     } catch (err) {
       console.error('Erro ao atualizar URLs após criação', err);
@@ -183,14 +188,11 @@ const App: React.FC = () => {
                   }}
                 >
                   <h1>Encurtador de URL</h1>
-                  <a href="/manager" className='a' style={
-                    { 
-                      width: 'auto', 
-                      padding: '0.5rem 1rem',
-                      textDecoration: "none"
-                    }
-                  }
-                  >
+                  <a href="/manager" className='a' style={{
+                    width: 'auto',
+                    padding: '0.5rem 1rem',
+                    textDecoration: "none"
+                  }}>
                     {loggingOut ? 'Carregando...' : 'Gerenciar URLS'}
                   </a>
                   <button
@@ -208,9 +210,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        
 
-        {/* ✅ NOVA ROTA PROTEGIDA: /manager */}
         <Route
           path="/manager"
           element={
@@ -225,19 +225,16 @@ const App: React.FC = () => {
                   }}
                 >
                   <h1>Gerenciador de URLs</h1>
-                  <a href='/app' className='a' style={
-                    { 
-                      width: 'auto', 
-                      padding: '0.5rem 1rem',
-                      textDecoration: "none",
-                    }
-                  }
-                  >
+                  <a href='/app' className='a' style={{
+                    width: 'auto',
+                    padding: '0.5rem 1rem',
+                    textDecoration: "none",
+                  }}>
                     {loggingOut ? 'Saindo...' : 'Voltar'}
                   </a>
                 </header>
 
-                <UrlManager /> {/*urls={urls}*/}
+                <UrlManager />
               </div>
             </ProtectedRoute>
           }

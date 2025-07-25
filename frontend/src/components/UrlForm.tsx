@@ -5,6 +5,10 @@ interface Props {
   onNewUrl(shortUrl: string): void;
 }
 
+interface CreateUrlResponse {
+  shortUrl: string;
+}
+
 const UrlForm: React.FC<Props> = ({ onNewUrl }) => {
   const [originalUrl, setOriginalUrl] = useState('');
   const [customSlug, setCustomSlug] = useState('');
@@ -17,11 +21,11 @@ const UrlForm: React.FC<Props> = ({ onNewUrl }) => {
     setLoading(true);
 
     try {
-      const res = await api.post('/urls', 
+      const res = await api.post<CreateUrlResponse>(
+        '/urls',
         { originalUrl, customSlug: customSlug || undefined },
         { withCredentials: true }
       );
-
 
       onNewUrl(res.data.shortUrl);
       setOriginalUrl('');

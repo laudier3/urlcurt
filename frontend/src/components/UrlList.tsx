@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 import {
   LineChart,
   Line,
@@ -9,7 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import api from '../services/api';
+import api from '../services/api';  // <-- sua importação mantida
 
 type Url = {
   id: number;
@@ -41,20 +41,14 @@ const UrlList: React.FC<Props> = ({ urls }) => {
   };
 
   const fetchTrafficData = async (urlId: number) => {
-    if (expandedUrlId === urlId) {
-      // Ocultar gráfico se já estiver expandido
-      setExpandedUrlId(null);
-      return;
-    }
-
     setLoadingTraffic(urlId);
     try {
-      const res = await api.get(`/urls/${urlId}/traffic`, { withCredentials: true });
-      const formatted = res.data.map((entry: any) => ({
-        date: entry.date,
-        count: entry.count,
-      }));
-      setTrafficData((prev) => ({ ...prev, [urlId]: formatted }));
+      // Aqui você tipa a resposta com <TrafficEntry[]> para resolver o erro do TS
+      const res = await api.get<TrafficEntry[]>(`/urls/${urlId}/traffic`, {
+        withCredentials: true,
+      });
+
+      setTrafficData((prev) => ({ ...prev, [urlId]: res.data }));
       setExpandedUrlId(urlId);
     } catch (err) {
       console.error('Erro ao buscar dados de tráfego', err);
@@ -73,7 +67,7 @@ const UrlList: React.FC<Props> = ({ urls }) => {
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
-          const shortUrl = `https://app3.apinonshops.store/${url.slug}`;
+          const shortUrl = `http://localhost:4000/${url.slug}`;
           const isExpanded = expandedUrlId === url.id;
           const isLoading = loadingTraffic === url.id;
           const history = trafficData[url.id];
@@ -89,7 +83,7 @@ const UrlList: React.FC<Props> = ({ urls }) => {
             >
               <div>
                 <Alert severity="success">
-                  URL encurtada:{' '}
+                  URL encurtada:{" "}
                   <a href={shortUrl} target="_blank" rel="noopener noreferrer">
                     {shortUrl}
                   </a>{' '}
@@ -103,27 +97,50 @@ const UrlList: React.FC<Props> = ({ urls }) => {
                       color: copiedUrlId === url.id ? 'white' : 'black',
                       border: '1px solid #ccc',
                       borderRadius: '4px',
-                      marginRight: '0.5rem',
                     }}
                   >
                     {copiedUrlId === url.id ? 'Copiado...' : 'Copiar'}
                   </button>
-
-                  <button
-                    onClick={() => fetchTrafficData(url.id)}
-                    style={{
-                      padding: '2px 6px',
-                      fontSize: '0.8rem',
-                      cursor: 'pointer',
-                      backgroundColor: '#f0f0f0',
-                      border: '1px solid #ccc',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    {isExpanded ? 'Ocultar gráfico' : isLoading ? 'Carregando...' : 'Ver gráfico'}
-                  </button>
                 </Alert>
               </div>
+
+              {/*<div style={{ marginTop: '10px' }}>
+                <strong>Original:</strong>{' '}
+                <a href={url.original} target="_blank" rel="noopener noreferrer">
+                  {url.original}
+                </a>
+              </div>
+
+              <div>
+                <strong>Visitas totais:</strong> {url.visits}
+              </div>
+
+              <div>
+                <strong>Criada em:</strong> {new Date(url.createdAt).toLocaleString()}
+              </div>
+
+              <button
+                style={{
+                  marginTop: 10,
+                  backgroundColor: '#4f46e5',
+                  color: 'white',
+                  border: 'none',
+                  padding: '6px 12px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (isExpanded) {
+                    setExpandedUrlId(null);
+                  } else if (!trafficData[url.id]) {
+                    fetchTrafficData(url.id);
+                  } else {
+                    setExpandedUrlId(url.id);
+                  }
+                }}
+              >
+                {isExpanded ? 'Ocultar tráfego' : isLoading ? 'Carregando...' : 'Ver tráfego'}
+              </button>
 
               {isExpanded && history && (
                 <div
@@ -153,7 +170,7 @@ const UrlList: React.FC<Props> = ({ urls }) => {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-              )}
+              )}*/}
             </li>
           );
         })}

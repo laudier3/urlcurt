@@ -19,7 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { UrlListlist } from "./UrlListlist"; // seu componente de listagem
 
-axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.baseURL = "https://app3.apinonshops.store";
 axios.defaults.withCredentials = true;
 
 interface UrlData {

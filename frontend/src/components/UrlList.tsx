@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert } from "@mui/material";
+import { Alert } from '@mui/material';
 import {
   LineChart,
   Line,
@@ -41,6 +41,12 @@ const UrlList: React.FC<Props> = ({ urls }) => {
   };
 
   const fetchTrafficData = async (urlId: number) => {
+    if (expandedUrlId === urlId) {
+      // Ocultar gráfico se já estiver expandido
+      setExpandedUrlId(null);
+      return;
+    }
+
     setLoadingTraffic(urlId);
     try {
       const res = await api.get(`/urls/${urlId}/traffic`, { withCredentials: true });
@@ -82,26 +88,43 @@ const UrlList: React.FC<Props> = ({ urls }) => {
               }}
             >
               <div>
-                <Alert severity="success"> URL encurtada:{" "} 
-                <a href={shortUrl} target="_blank" rel="noopener noreferrer">
-                  {shortUrl}
-                </a>{' '}
-                <button
-                  onClick={() => handleCopy(url.id, shortUrl)}
-                  style={{
-                    padding: '2px 6px',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer',
-                    backgroundColor: copiedUrlId === url.id ? '#10b981' : '#e5e7eb',
-                    color: copiedUrlId === url.id ? 'white' : 'black',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                  }}
-                >
-                  {copiedUrlId === url.id ? 'Copiado...' : 'Copiar'}
-                </button>
-               </Alert>
+                <Alert severity="success">
+                  URL encurtada:{' '}
+                  <a href={shortUrl} target="_blank" rel="noopener noreferrer">
+                    {shortUrl}
+                  </a>{' '}
+                  <button
+                    onClick={() => handleCopy(url.id, shortUrl)}
+                    style={{
+                      padding: '2px 6px',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      backgroundColor: copiedUrlId === url.id ? '#10b981' : '#e5e7eb',
+                      color: copiedUrlId === url.id ? 'white' : 'black',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      marginRight: '0.5rem',
+                    }}
+                  >
+                    {copiedUrlId === url.id ? 'Copiado...' : 'Copiar'}
+                  </button>
+
+                  <button
+                    onClick={() => fetchTrafficData(url.id)}
+                    style={{
+                      padding: '2px 6px',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      backgroundColor: '#f0f0f0',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    {isExpanded ? 'Ocultar gráfico' : isLoading ? 'Carregando...' : 'Ver gráfico'}
+                  </button>
+                </Alert>
               </div>
+
               {isExpanded && history && (
                 <div
                   style={{

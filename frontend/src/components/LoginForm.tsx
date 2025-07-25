@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+//import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 interface Props {
   onLogin(): void;
@@ -90,7 +90,7 @@ const LoginForm: React.FC<Props> = ({ onLogin }) => {
             if (e.key === 'Enter' || e.key === ' ') setShowPassword(prev => !prev);
           }}
         >
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
+          {/*showPassword ? <FaEyeSlash /> : <FaEye />*/}
         </span>
       </div>
 

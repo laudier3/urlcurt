@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from '../services/api';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+//import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 interface RegisterResponse {
   token?: string;
@@ -108,7 +108,7 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
             if (e.key === 'Enter' || e.key === ' ') setShowPassword((prev) => !prev);
           }}
         >
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
+          {/*showPassword ? <FaEyeSlash /> : <FaEye />*/}
         </span>
       </div>
 
@@ -140,7 +140,7 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
             if (e.key === 'Enter' || e.key === ' ') setShowConfirmPassword((prev) => !prev);
           }}
         >
-          {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          {/*showConfirmPassword ? <FaEyeSlash /> : <FaEye />*/}
         </span>
       </div>
 

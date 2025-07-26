@@ -15,6 +15,9 @@ import { UrlManager } from './components/UrlManager';
 import api from './services/api';
 import { useAuth } from './hooks/useAuth';
 
+import SobrePage from './components/SobrePage';      // <-- import novo
+import ContatoPage from './components/ContatoPage';  // <-- import novo
+
 // Tipos
 type Url = {
   id: number;
@@ -104,6 +107,8 @@ const App: React.FC = () => {
               <LandingPage
                 onLoginClick={() => window.location.assign('/login')}
                 onRegisterClick={() => window.location.assign('/register')}
+                onSobreClick={() => window.location.assign('/sobre')}
+                onContatoClick={() => window.location.assign('/contato')}
               />
             )
           }
@@ -253,6 +258,11 @@ const App: React.FC = () => {
           }
         />
 
+        {/* Novas rotas para Sobre e Contato */}
+        <Route path="/sobre" element={<SobrePage />} />
+        <Route path="/contato" element={<ContatoPage />} />
+
+        {/* Rota fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

@@ -1,12 +1,97 @@
 import React, { useEffect, useRef } from 'react';
+import { Helmet } from 'react-helmet';
 import ConsentFooter from './ConsentFooter';
+import FeaturesSection from './FeaturesSection';
+import FeaturesSection1 from './FeaturesSection1';
+import FeaturesSection2 from './FeaturesSection2';
+import AboutSection from './AboutSection';
+import CallToAction from './CallToAction';
+import ArticlesSection from './ArticlesSection';
+//import "./LoadingSpinner.css"
 
 type Props = {
   onLoginClick: () => void;
   onRegisterClick: () => void;
+  onSobreClick: () => void;
+  onContatoClick: () => void;
 };
 
-const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick }) => {
+const articlesMock = [
+  {
+    id: 1,
+    title: 'Por que usar encurtadores de URL? Vantagens para negócios digitais',
+    summary: 'Entenda como URLs curtas aumentam a confiança e a usabilidade nas suas campanhas.',
+    url: 'https://blog.hubspot.com/marketing/'
+  },
+  {
+    id: 2,
+    title: 'Os benefícios do encurtamento de URLs para marketing digital',
+    summary: 'Como links curtos ajudam a melhorar o engajamento e as métricas das campanhas.',
+    url: 'https://neilpatel.com/blog/'
+  },
+  {
+    id: 3,
+    title: 'Como encurtar URLs pode melhorar a performance das suas campanhas',
+    summary: 'Dicas para otimizar seus links e rastrear resultados com mais eficiência.',
+    url: 'https://www.wordstream.com/blog/'
+  },
+  {
+    id: 4,
+    title: 'Marketing digital: estratégias para usar URLs curtas e personalizadas',
+    summary: 'Torne seus links memoráveis e melhore a experiência do usuário.',
+    url: 'https://sproutsocial.com/insights/'
+  },
+  {
+    id: 5,
+    title: 'A importância das URLs curtas para o SEO e a experiência do usuário',
+    summary: 'Como URLs encurtadas influenciam o posicionamento e a navegação.',
+    url: 'https://ahrefs.com/blog/'
+  },
+  {
+    id: 6,
+    title: 'Ferramentas de encurtamento de URLs e suas vantagens para o marketing',
+    summary: 'Conheça as melhores plataformas para criar links curtos e rastrear cliques.',
+    url: 'https://buffer.com/library/'
+  },
+  {
+    id: 7,
+    title: 'Como o uso de URLs curtas pode aumentar a taxa de cliques (CTR)',
+    summary: 'Estudos e exemplos de sucesso com encurtadores de URL.',
+    url: 'https://blog.hootsuite.com/'
+  },
+  {
+    id: 8,
+    title: 'Por que seu marketing digital precisa de links rastreáveis e curtos',
+    summary: 'Controle e análise detalhada para otimizar campanhas.',
+    url: 'https://www.socialmediaexaminer.com/'
+  },
+  {
+    id: 9,
+    title: 'O papel dos links curtos em campanhas de email marketing eficazes',
+    summary: 'Melhore o design e a performance dos seus emails com URLs encurtadas.',
+    url: 'https://emailonacid.com/blog/article/email-marketing/'
+  },
+  {
+    id: 10,
+    title: 'Como personalizar URLs para reforçar sua marca e aumentar a confiança',
+    summary: 'Dicas para criar links que transmitam profissionalismo.',
+    url: 'https://www.forbes.com/sites/forbescommunicationscouncil/'
+  },
+  {
+    id: 11,
+    title: 'Erros comuns ao usar encurtadores de URL em marketing digital',
+    summary: 'Evite problemas que podem prejudicar suas campanhas e a reputação.',
+    url: 'https://contentmarketinginstitute.com/2023/02/'
+  },
+  {
+    id: 12,
+    title: 'Tendências de marketing digital que envolvem o uso de URLs curtas',
+    summary: 'Como as URLs encurtadas fazem parte das estratégias modernas.',
+    url: 'https://www.singlegrain.com/digital-marketing/'
+  },
+];
+
+const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreClick, onContatoClick }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -48,7 +133,6 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick }) => {
         ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha.toFixed(2)})`;
         ctx.fill();
 
-        // pulsar efeito
         star.alpha += star.delta;
         if (star.alpha <= 0) {
           star.alpha = 0;
@@ -74,7 +158,13 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick }) => {
 
   return (
     <>
-      {/* Canvas ocupa todo o background, posicionado atrás */}
+      <Helmet>
+        <title>URLShort - Encurtador de Links</title>
+        <meta name="description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://seudominio.com/" />
+      </Helmet>
+      
       <canvas
         ref={canvasRef}
         className="background"
@@ -85,41 +175,50 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick }) => {
           display: 'block',
         }}
       />
-      <nav className="navbar">
+
+      <nav className="navbar" role="navigation" aria-label="Navegação principal">
         <div className="logo">URLShort</div>
         <div className="nav-links">
-          <button onClick={onLoginClick} className="btn btn-login">
-            Login
-          </button>
-          <button onClick={onRegisterClick} className="btn btn-register">
-            Registrar
-          </button>
+          <button onClick={onSobreClick} className="btn btn-login">Sobre</button>
+          <button onClick={onContatoClick} className="btn btn-login">Contato</button>
+          <button onClick={onLoginClick} className="btn btn-login">Login</button>
+          <button onClick={onRegisterClick} className="btn btn-register">Registrar</button>
         </div>
       </nav>
 
       <main className="hero">
         <h1>Encurte e Compartilhe URLs com Facilidade</h1>
         <p>
-          Transforme links longos em URLs curtas, fáceis de compartilhar e acompanhar. 
+          Transforme links longos em URLs curtas, fáceis de compartilhar e acompanhar.
           Acompanhe estatísticas e gerencie suas URLs com segurança.
         </p>
         <div className="hero-buttons">
-          <button onClick={onRegisterClick} className="btn btn-primary">
-            Comece Agora
-          </button>
-          <button onClick={onLoginClick} className="btn btn-secondary">
-            Já Tenho Conta
-          </button>
+          <button onClick={onRegisterClick} className="btn btn-primary">Comece Agora</button>
+          <button onClick={onLoginClick} className="btn btn-secondary">Já Tenho Conta</button>
         </div>
       </main>
 
+      <FeaturesSection />
+      <FeaturesSection1 />
+      <FeaturesSection2 />
+      <AboutSection />
+      <ArticlesSection articles={articlesMock} />
+
+      <CallToAction onRegisterClick={onRegisterClick} />
+
+      <footer className="footer" role="contentinfo">
+        <small>
+          © {new Date().getFullYear()} URLShort. Todos os direitos reservados. |{' '}
+          <a href="/politica-de-privacidade">Política de Privacidade</a>
+        </small>
+      </footer>
+
+      <ConsentFooter />
+
       <style>{`
-        /* Mantém seu gradiente escuro original para o canvas ficar mais bonito */
         canvas.background {
           background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
         }
-        
-        /* Navbar e outros estilos mantidos iguais */
         .navbar {
           display: flex;
           justify-content: space-between;
@@ -139,7 +238,6 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick }) => {
           color: #8b5cf6;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           letter-spacing: 2px;
-          cursor: default;
         }
         .nav-links {
           display: flex;
@@ -173,7 +271,7 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick }) => {
         }
         .hero {
           max-width: 700px;
-          margin: 120px auto 40px auto; 
+          margin: 120px auto 40px auto;
           text-align: center;
           color: #e0e7ff;
           padding: 0 1rem;
@@ -219,31 +317,52 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick }) => {
         .btn-secondary:hover {
           background-color: #8b5cf6;
           color: white;
-          box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
+                    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
         }
+
+        .footer {
+          text-align: center;
+          padding: 2rem 1rem;
+          color: #94a3b8;
+          font-size: 0.9rem;
+          margin-top: 3rem;
+        }
+
+        .footer a {
+          color: #8b5cf6;
+          text-decoration: underline;
+        }
+
         @media (max-width: 600px) {
           .hero h1 {
             font-size: 2.2rem;
           }
+
           .hero p {
             font-size: 1rem;
           }
+
           .hero-buttons {
             flex-direction: column;
             gap: 0.8rem;
           }
+
           .nav-links {
             gap: 0.5rem;
           }
-          .btn, .btn-primary, .btn-secondary {
+
+          .btn,
+          .btn-primary,
+          .btn-secondary {
             font-size: 0.9rem;
             padding: 0.5rem 1rem;
+            width: 100%;
           }
         }
       `}</style>
-      <ConsentFooter />
     </>
   );
 };
 
 export default LandingPage;
+

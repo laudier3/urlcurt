@@ -173,39 +173,6 @@ router.post('/api/logout', (_req: any, res: any) => {
   res.sendStatus(200);
 });
 
-// --- Encurtar URL ---
-/*router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
-  const { originalUrl, customSlug } = req.body;
-  if (!validUrl.isWebUri(originalUrl)) return res.status(400).json({ error: 'URL inválida' });
-
-  const userId = req.userId!;
-  try {
-    let slug = customSlug?.trim() ?? '';
-    if (slug) {
-      const exists = await prisma.url.findUnique({ where: { slug } });
-      if (exists) return res.status(400).json({ error: 'Slug personalizado já existe' });
-    } else {
-      const generateSlug = () => {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-      };
-      do {
-        slug = generateSlug();
-      } while (await prisma.url.findUnique({ where: { slug } }));
-    }
-
-    const shortUrlFull = `${process.env.BASE_URL || 'http://localhost:4000'}/${slug}`;
-    const url = await prisma.url.create({
-      data: { original: originalUrl, slug, shortUrl: shortUrlFull, userId },
-    });
-
-    res.json(url);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao salvar URL' });
-  }
-});*/
-
 router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
   const { originalUrl, customSlug } = req.body;
   if (!validUrl.isWebUri(originalUrl)) {
@@ -235,7 +202,7 @@ router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
       } while (await prisma.url.findUnique({ where: { slug } }));
     }
 
-    const shortUrlFull = `${process.env.BASE_URL || 'http://localhost:4000'}/${slug}`;
+    const shortUrlFull = `${process.env.BASE_URL || 'https://app3.apinonshops.store'}/${slug}`;
     const url = await prisma.url.create({
       data: { original: originalUrl, slug, shortUrl: shortUrlFull, userId },
     });
@@ -290,7 +257,7 @@ router.put('/api/urls/:id', authMiddleware, async (req: AuthRequest, res: any) =
       data: {
         original: originalUrl,
         slug: shortSlug,
-        shortUrl: `${process.env.BASE_URL || 'http://localhost:4000'}/${shortSlug}`
+        shortUrl: `${process.env.BASE_URL || 'https://app3.apinonshops.store'}/${shortSlug}`
       },
     });
 
@@ -385,28 +352,5 @@ router.get('/api/urls/:id/traffic', async (req: any, res: any) => {
     res.status(500).json({ error: 'Erro interno no servidor' });
   }
 });
-
-// GET /api/urls/:id/traffic
-/*router.get('/api/urls/:id/traffic', authMiddleware, async (req: AuthRequest, res: any) => {
-  const urlId = parseInt(req.params.id);
-  const userId = req.userId!;
-
-  // Verifique se a URL pertence ao usuário
-  const url = await prisma.url.findUnique({ where: { id: urlId } });
-  if (!url || url.userId !== userId) return res.status(404).json({ error: 'URL não encontrada' });
-
-  // Agrupe por dia
-  const data = await prisma.$queryRawUnsafe(`
-    SELECT 
-      DATE("timestamp") as date, 
-      COUNT(*) as count 
-    FROM "Visit" 
-    WHERE "urlId" = ${urlId}
-    GROUP BY DATE("timestamp")
-    ORDER BY date ASC;
-  `);
-
-  res.json(data);
-});*/
 
 export { router };

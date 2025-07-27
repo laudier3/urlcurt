@@ -302,6 +302,7 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
           border-radius: 8px;
           font-weight: 700;
           box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
+          margin: auto;
         }
         .btn-primary:hover {
           background-color: #7c3aed;
@@ -314,6 +315,7 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
           padding: 0.75rem 2rem;
           border-radius: 8px;
           box-shadow: none;
+          margin: auto;
         }
         .btn-secondary:hover {
           background-color: #8b5cf6;

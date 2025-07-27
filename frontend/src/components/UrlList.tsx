@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
 import { Alert } from "@mui/material";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import api from '../services/api';  // <-- sua importação mantida
 
 type Url = {
   id: number;
@@ -19,42 +9,17 @@ type Url = {
   createdAt: string;
 };
 
-type TrafficEntry = {
-  date: string;
-  count: number;
-};
-
 type Props = {
   urls: Url[];
 };
 
 const UrlList: React.FC<Props> = ({ urls }) => {
-  const [expandedUrlId, setExpandedUrlId] = useState<number | null>(null);
-  const [trafficData, setTrafficData] = useState<Record<number, TrafficEntry[]>>({});
-  const [loadingTraffic, setLoadingTraffic] = useState<number | null>(null);
   const [copiedUrlId, setCopiedUrlId] = useState<number | null>(null);
 
   const handleCopy = (urlId: number, shortUrl: string) => {
     navigator.clipboard.writeText(shortUrl);
     setCopiedUrlId(urlId);
     setTimeout(() => setCopiedUrlId(null), 2000);
-  };
-
-  const fetchTrafficData = async (urlId: number) => {
-    setLoadingTraffic(urlId);
-    try {
-      // Aqui você tipa a resposta com <TrafficEntry[]> para resolver o erro do TS
-      const res = await api.get<TrafficEntry[]>(`/urls/${urlId}/traffic`, {
-        withCredentials: true,
-      });
-
-      setTrafficData((prev) => ({ ...prev, [urlId]: res.data }));
-      setExpandedUrlId(urlId);
-    } catch (err) {
-      console.error('Erro ao buscar dados de tráfego', err);
-    } finally {
-      setLoadingTraffic(null);
-    }
   };
 
   if (urls.length === 0) {
@@ -68,9 +33,6 @@ const UrlList: React.FC<Props> = ({ urls }) => {
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
           const shortUrl = `https://app3.apinonshops.store/${url.slug}`;
-          const isExpanded = expandedUrlId === url.id;
-          const isLoading = loadingTraffic === url.id;
-          const history = trafficData[url.id];
 
           return (
             <li
@@ -103,74 +65,6 @@ const UrlList: React.FC<Props> = ({ urls }) => {
                   </button>
                 </Alert>
               </div>
-
-              {/*<div style={{ marginTop: '10px' }}>
-                <strong>Original:</strong>{' '}
-                <a href={url.original} target="_blank" rel="noopener noreferrer">
-                  {url.original}
-                </a>
-              </div>
-
-              <div>
-                <strong>Visitas totais:</strong> {url.visits}
-              </div>
-
-              <div>
-                <strong>Criada em:</strong> {new Date(url.createdAt).toLocaleString()}
-              </div>
-
-              <button
-                style={{
-                  marginTop: 10,
-                  backgroundColor: '#4f46e5',
-                  color: 'white',
-                  border: 'none',
-                  padding: '6px 12px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  if (isExpanded) {
-                    setExpandedUrlId(null);
-                  } else if (!trafficData[url.id]) {
-                    fetchTrafficData(url.id);
-                  } else {
-                    setExpandedUrlId(url.id);
-                  }
-                }}
-              >
-                {isExpanded ? 'Ocultar tráfego' : isLoading ? 'Carregando...' : 'Ver tráfego'}
-              </button>
-
-              {isExpanded && history && (
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    backgroundColor: '#f4f4f4',
-                    padding: '10px',
-                    borderRadius: '6px',
-                  }}
-                >
-                  <h4>Tráfego nos últimos dias</h4>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={history}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis
-                        dataKey="date"
-                        tickFormatter={(date) =>
-                          new Date(date).toLocaleDateString('pt-BR', {
-                            day: '2-digit',
-                            month: '2-digit',
-                          })
-                        }
-                      />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="count" stroke="#4f46e5" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              )}*/}
             </li>
           );
         })}

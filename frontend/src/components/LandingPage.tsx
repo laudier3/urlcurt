@@ -9,6 +9,7 @@ import CallToAction from './CallToAction';
 import ArticlesSection from './ArticlesSection';
 //import "./LoadingSpinner.css"
 
+
 type Props = {
   onLoginClick: () => void;
   onRegisterClick: () => void;
@@ -159,7 +160,7 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
   return (
     <>
       <Helmet>
-        <title>URLShort - Encurtador de Links</title>
+        <title>Urlcurt - Encurtador de Links</title>
         <meta name="description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://seudominio.com/" />
@@ -177,7 +178,7 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
       />
 
       <nav className="navbar" role="navigation" aria-label="Navegação principal">
-        <div className="logo">URLShort</div>
+        <div className="logo">Urlcurt</div>
         <div className="nav-links">
           <button onClick={onSobreClick} className="btn btn-login">Sobre</button>
           <button onClick={onContatoClick} className="btn btn-login">Contato</button>
@@ -208,8 +209,8 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
 
       <footer className="footer" role="contentinfo">
         <small>
-          © {new Date().getFullYear()} URLShort. Todos os direitos reservados. |{' '}
-          <a href="/politica-de-privacidade">Política de Privacidade</a>
+          © {new Date().getFullYear()} Urlcurt. Todos os direitos reservados. |{' '}
+          <a href="/politica">Política de Privacidade</a>
         </small>
       </footer>
 
@@ -358,6 +359,45 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
             padding: 0.5rem 1rem;
             width: 100%;
           }
+          .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            background: transparent;
+            border: none;
+            color: #8b5cf6;
+            cursor: pointer;
+            z-index: 11;
+          }
+
+          @media (max-width: 768px) {
+            .hamburger {
+              display: block;
+            }
+
+            .nav-links {
+              position: absolute;
+              top: 100%;
+              left: 0;
+              right: 0;
+              background: rgba(15, 32, 39, 0.95);
+              display: none;
+              flex-direction: column;
+              align-items: center;
+              gap: 1rem;
+              padding: 1rem 0;
+              transition: all 0.3s ease;
+            }
+
+            .nav-links.active {
+              display: flex;
+            }
+
+            .btn {
+              width: 90%;
+              max-width: 250px;
+            }
+          }
+
         }
       `}</style>
     </>

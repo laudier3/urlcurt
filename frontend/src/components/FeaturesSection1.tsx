@@ -3,7 +3,7 @@ import React from 'react';
 const FeaturesSection1: React.FC = () => {
   return (
     <section className="features-section">
-      {/*<h2>Por que escolher o URLShort para suas URLs?</h2>*/}
+      {/*<h2>Por que escolher o Urlcurt para suas URLs?</h2>*/}
       <div className="features">
         <div className="feature">
           <h3>🚀 Melhore o engajamento</h3>

@@ -17,6 +17,7 @@ import { useAuth } from './hooks/useAuth';
 
 import SobrePage from './components/SobrePage';      // <-- import novo
 import ContatoPage from './components/ContatoPage';  // <-- import novo
+import { Politica } from './components/Politica';
 
 // Tipos
 type Url = {
@@ -261,6 +262,7 @@ const App: React.FC = () => {
         {/* Novas rotas para Sobre e Contato */}
         <Route path="/sobre" element={<SobrePage />} />
         <Route path="/contato" element={<ContatoPage />} />
+        <Route path="/politica" element={<Politica />} />
 
         {/* Rota fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

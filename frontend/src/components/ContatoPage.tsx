@@ -1,97 +1,130 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import emailjs from 'emailjs-com';
+import './LoadingSpinner.css';
 
-const ContatoPage: React.FC = () => {
-  const [form, setForm] = useState({ nome: '', email: '', mensagem: '' });
+interface ContactPageData {
+  name: string;
+  email: string;
+  message: string;
+}
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+const ContactPage: React.FC = () => {
+  const service_email = process.env.REACT_APP_YOUR_SERVICE_ID!;
+  const templete_email = process.env.REACT_APP_YOUR_TEMPLATE_ID!;
+  const user_email = process.env.REACT_APP_YOUR_USER_ID!;
+
+  const [formData, setFormData] = useState<ContactPageData>({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  const [status, setStatus] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const validateEmail = (email: string): boolean => {
+    return /\S+@\S+\.\S+/.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert('Mensagem enviada com sucesso!');
-    // Aqui você pode adicionar envio via API ou integração com backend
+
+    if (!formData.name || !formData.email || !formData.message) {
+      setStatus('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setStatus('E-mail inválido.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    emailjs
+      .send(service_email, templete_email, { ...formData }, user_email)
+      .then(
+        () => {
+          setStatus('Mensagem enviada com sucesso!');
+          setFormData({ name: '', email: '', message: '' });
+          setIsLoading(false);
+        },
+        (error) => {
+          console.error('Erro ao enviar e-mail:', error);
+          setStatus('Erro ao enviar. Tente novamente mais tarde.');
+          setIsLoading(false);
+        }
+      );
   };
 
   return (
-    <>
-      <Helmet>
-        <title>Contato | URLShort</title>
-        <meta name="description" content="Entre em contato com a equipe do URLShort para dúvidas, sugestões ou parcerias." />
-      </Helmet>
+    <div className="containerContato">
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Enviando sua mensagem...</p>
+        </div>
+      )}
 
-      <main className="contact-container">
-        <h1>Fale Conosco</h1>
-        <form onSubmit={handleSubmit} className="contact-form">
-          <label>
-            Nome:
-            <input type="text" name="nome" value={form.nome} onChange={handleChange} required />
-          </label>
-          <label>
-            E-mail:
-            <input type="email" name="email" value={form.email} onChange={handleChange} required />
-          </label>
-          <label>
-            Mensagem:
-            <textarea name="mensagem" value={form.mensagem} onChange={handleChange} required />
-          </label>
-          <button type="submit">Enviar</button>
-        </form>
-      </main>
+      <h2>Fale Conosco</h2>
 
-      <style>{`
-        .contact-container {
-          max-width: 700px;
-          margin: 120px auto;
-          padding: 2rem;
-          color: #e0e7ff;
-        }
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Nome:</label><br />
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+        <div>
+          <label>E-mail:</label><br />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+        <div>
+          <br />
+          <label>Mensagem:</label><br />
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            disabled={isLoading}
+            style={{
+              width: '100%',
+              height: 100,
+              padding: 10,
+              borderRadius: 5,
+              marginTop: 5,
+            }}
+          ></textarea>
+        </div>
 
-        .contact-container h1 {
-          font-size: 2.2rem;
-          color: #a78bfa;
-          margin-bottom: 1.5rem;
-        }
+        <button type="submit" disabled={isLoading}>
+          Enviar
+        </button>
 
-        .contact-form {
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-        }
-
-        .contact-form label {
-          display: flex;
-          flex-direction: column;
-          font-weight: 600;
-        }
-
-        .contact-form input,
-        .contact-form textarea {
-          padding: 0.8rem;
-          border-radius: 8px;
-          border: 1px solid #8b5cf6;
-          background-color: #1e293b;
-          color: #e0e7ff;
-          font-size: 1rem;
-        }
-
-        .contact-form button {
-          background-color: #8b5cf6;
-          color: white;
-          padding: 0.75rem 2rem;
-          font-size: 1rem;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-        }
-
-        .contact-form button:hover {
-          background-color: #7c3aed;
-        }
-      `}</style>
-    </>
+        <p>{status}</p>
+      </form>
+    </div>
   );
 };
 
-export default ContatoPage;
+export default ContactPage;

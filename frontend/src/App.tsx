@@ -1,9 +1,11 @@
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+  useLocation, 
+  useNavigate
 } from 'react-router-dom';
 
 import LoginForm from './components/LoginForm';
@@ -34,21 +36,45 @@ interface UrlResponse {
 
 type ProtectedRouteProps = {
   isAuthenticated: boolean;
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, children }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Redireciona para login e evita que o usuário use "voltar"
+      navigate('/', { replace: true, state: { from: location.pathname } });
+    }
+  }, [isAuthenticated, navigate, location]);
+
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return null; // ou um <Loading /> se quiser animar
   }
+
   return <>{children}</>;
 };
+
 
 const App: React.FC = () => {
   const { isAuthenticated, loading, logout } = useAuth();
   const [urls, setUrls] = useState<Url[]>([]);
   const [loadingUrls, setLoadingUrls] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  
+
+  const deleteAllCookies = () => {
+    const cookies = document.cookie.split(";");
+
+    for (const cookie of cookies) {
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -74,10 +100,19 @@ const App: React.FC = () => {
     fetchUrls();
   }, [isAuthenticated]);
 
+  if (loading) {
+    return <p>Verificando autenticação...</p>;
+  }
+
   const handleLogout = async () => {
     setLoggingOut(true);
     await logout();
+    deleteAllCookies();
     setLoggingOut(false);
+
+    // ⚠️ Força redirecionamento sem deixar /app no histórico
+    window.location.replace('/');
+    window.close();
   };
 
   async function handleNewUrl() {

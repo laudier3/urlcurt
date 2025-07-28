@@ -39,7 +39,7 @@ const ConsentFooter: React.FC = () => {
       <div style={styles.text}>
         Usamos cookies próprios e de terceiros para personalizar anúncios, analisar o tráfego do site e melhorar sua experiência. 
         Você pode aceitar ou recusar o uso de cookies para anúncios personalizados.{' '}
-        <a href="/politica-de-privacidade" target="_blank" rel="noopener noreferrer" style={styles.link}>
+        <a href="/politica" target="_blank" rel="noopener noreferrer" style={styles.link}>
           Saiba mais
         </a>.
         Recusar pode afetar a relevância dos anúncios exibidos.
@@ -67,10 +67,10 @@ const ConsentFooter: React.FC = () => {
 const styles: Record<string, React.CSSProperties> = {
   container: {
     position: 'fixed',
-    bottom: 0,
+    bottom: 15,
     left: 0,
     right: 0,
-    backgroundColor: '#2c3e50',
+    backgroundColor: '#2c3e5088',
     color: '#ecf0f1',
     padding: '1rem 2rem',
     display: 'flex',
@@ -79,6 +79,9 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '1rem',
     boxShadow: '0 -2px 10px rgba(0,0,0,0.2)',
     zIndex: 1000,
+    width: '98%',
+    margin: 'auto',
+    borderRadius: 6,
   },
   text: {
     flex: 1,

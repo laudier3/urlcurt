@@ -16,7 +16,7 @@ export function authMiddleware(
   const token = req.cookies.token;
 
   if (!token) {
-    res.status(401).json({ error: 'Token não encontrado' });
+    res.status(401).json({ error: 'Token não encontrado, você não esta logado...' });
     return;
   }
 

@@ -4,8 +4,8 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation, 
-  useNavigate
+  useLocation,
+  useNavigate,
 } from 'react-router-dom';
 
 import LoginForm from './components/LoginForm';
@@ -17,11 +17,10 @@ import { UrlManager } from './components/UrlManager';
 import api from './services/api';
 import { useAuth } from './hooks/useAuth';
 
-import SobrePage from './components/SobrePage';      // <-- import novo
-import ContatoPage from './components/ContatoPage';  // <-- import novo
+import SobrePage from './components/SobrePage';
+import ContatoPage from './components/ContatoPage';
 import { Politica } from './components/Politica';
 
-// Tipos
 type Url = {
   id: number;
   original: string;
@@ -39,46 +38,33 @@ type ProtectedRouteProps = {
   children: React.ReactNode;
 };
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, children }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isAuthenticated, children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      // Redireciona para login e evita que o usuário use "voltar"
       navigate('/', { replace: true, state: { from: location.pathname } });
     }
   }, [isAuthenticated, navigate, location]);
 
   if (!isAuthenticated) {
-    return null; // ou um <Loading /> se quiser animar
+    return null;
   }
 
   return <>{children}</>;
 };
-
 
 const App: React.FC = () => {
   const { isAuthenticated, loading, logout } = useAuth();
   const [urls, setUrls] = useState<Url[]>([]);
   const [loadingUrls, setLoadingUrls] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
-  
-
-  const deleteAllCookies = () => {
-    const cookies = document.cookie.split(";");
-
-    for (const cookie of cookies) {
-      const eqPos = cookie.indexOf("=");
-      const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
-
-      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-    }
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      setUrls([]); // limpa urls se deslogar
+      setUrls([]);
     }
   }, [isAuthenticated]);
 
@@ -100,19 +86,20 @@ const App: React.FC = () => {
     fetchUrls();
   }, [isAuthenticated]);
 
-  if (loading) {
-    return <p>Verificando autenticação...</p>;
-  }
-
   const handleLogout = async () => {
     setLoggingOut(true);
-    await logout();
-    setLoggingOut(false);
-    deleteAllCookies();
+    try {
+      await api.post('/logout', null, { withCredentials: true });
 
-    // ⚠️ Força redirecionamento sem deixar /app no histórico
-    window.location.replace('/');
-    window.close();
+      logout(); // Atualiza contexto para refletir deslogado
+      setUrls([]);
+      navigate('/', { replace: true });
+    } catch (err) {
+      console.error('Erro ao sair:', err);
+      alert('Erro ao sair. Tente novamente.');
+    } finally {
+      setLoggingOut(false);
+    }
   };
 
   async function handleNewUrl() {
@@ -141,10 +128,10 @@ const App: React.FC = () => {
               <Navigate to="/app" replace />
             ) : (
               <LandingPage
-                onLoginClick={() => window.location.assign('/login')}
-                onRegisterClick={() => window.location.assign('/register')}
-                onSobreClick={() => window.location.assign('/sobre')}
-                onContatoClick={() => window.location.assign('/contato')}
+                onLoginClick={() => navigate('/login')}
+                onRegisterClick={() => navigate('/register')}
+                onSobreClick={() => navigate('/sobre')}
+                onContatoClick={() => navigate('/contato')}
               />
             )
           }
@@ -156,12 +143,12 @@ const App: React.FC = () => {
             isAuthenticated ? (
               <Navigate to="/app" replace />
             ) : (
-              <div className="container" style={{ maxWidth: 400, margin: 'auto', marginTop: "10%" }}>
-                <LoginForm onLogin={() => window.location.assign('/app')} />
+              <div className="container" style={{ maxWidth: 400, margin: 'auto', marginTop: '10%' }}>
+                <LoginForm onLogin={() => navigate('/app')} />
                 <p style={{ marginTop: 12 }}>
                   Não tem conta?{' '}
                   <button
-                    onClick={() => window.location.assign('/register')}
+                    onClick={() => navigate('/register')}
                     style={{
                       background: 'none',
                       border: 'none',
@@ -172,7 +159,7 @@ const App: React.FC = () => {
                     Registre-se
                   </button>
                   <button
-                    onClick={() => window.location.assign('/')}
+                    onClick={() => navigate('/')}
                     style={{
                       background: 'none',
                       border: 'solid 1px',
@@ -194,12 +181,12 @@ const App: React.FC = () => {
             isAuthenticated ? (
               <Navigate to="/app" replace />
             ) : (
-              <div className="container" style={{ maxWidth: 400, margin: 'auto', marginTop: "10%" }}>
-                <RegisterForm onRegister={() => window.location.assign('/app')} />
+              <div className="container" style={{ maxWidth: 400, margin: 'auto', marginTop: '10%' }}>
+                <RegisterForm onRegister={() => navigate('/app')} />
                 <p style={{ marginTop: 12 }}>
                   Já tem conta?{' '}
                   <button
-                    onClick={() => window.location.assign('/login')}
+                    onClick={() => navigate('/login')}
                     style={{
                       background: 'none',
                       border: 'none',
@@ -229,13 +216,12 @@ const App: React.FC = () => {
                   }}
                 >
                   <h1>Encurtador de URL</h1>
-                  <a href="/manager" className='a' style={{
-                    width: 'auto',
-                    padding: '0.5rem 1rem',
-                    textDecoration: "none"
-                  }}>
-                    {loggingOut ? 'Carregando...' : 'Gerenciar URLS'}
-                  </a>
+                  <button
+                    onClick={() => navigate('/manager')}
+                    style={{ width: 'auto', padding: '0.5rem 1rem' }}
+                  >
+                    Gerenciar URLs
+                  </button>
                   <button
                     onClick={handleLogout}
                     disabled={loggingOut}
@@ -266,13 +252,12 @@ const App: React.FC = () => {
                   }}
                 >
                   <h1>Gerenciador de URLs</h1>
-                  <a href='/app' className='a' style={{
-                    width: 'auto',
-                    padding: '0.5rem 1rem',
-                    textDecoration: "none",
-                  }}>
-                    {loggingOut ? 'Saindo...' : 'Voltar'}
-                  </a>
+                  <button
+                    onClick={() => navigate('/app')}
+                    style={{ width: 'auto', padding: '0.5rem 1rem' }}
+                  >
+                    Voltar
+                  </button>
                 </header>
 
                 <UrlManager />
@@ -281,25 +266,10 @@ const App: React.FC = () => {
           }
         />
 
-        <Route
-          path="/url-form"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/app" replace />
-            ) : (
-              <div style={{ marginTop: 50 }}>
-                <h2>Você já está logado! Redirecionando para a página principal...</h2>
-              </div>
-            )
-          }
-        />
-
-        {/* Novas rotas para Sobre e Contato */}
+        <Route path="/url-form" element={<Navigate to="/app" replace />} />
         <Route path="/sobre" element={<SobrePage />} />
         <Route path="/contato" element={<ContatoPage />} />
         <Route path="/politica" element={<Politica />} />
-
-        {/* Rota fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

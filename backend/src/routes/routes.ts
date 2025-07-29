@@ -1,7 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import validUrl from 'valid-url';
-import { hashPassword, comparePassword, generateToken } from '../services/auth';
+import { hashPassword, comparePassword, generateToken, verifyToken } from '../services/auth';
 import { authMiddleware, AuthRequest } from '../middleware/authMiddleware';
 import geoip from 'geoip-lite';
 import twilio from 'twilio';
@@ -178,10 +178,27 @@ router.get('/api/me', authMiddleware, async (req: AuthRequest, res: any) => {
   res.json(user);
 });
 
+router.get('/api/check', (req: any, res: any) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.status(401).json({ authenticated: false });
+
+  try {
+    const decoded = verifyToken(token);
+    return res.json({ authenticated: true, user: decoded });
+  } catch (err) {
+    return res.status(401).json({ authenticated: false });
+  }
+});
+
 // --- Logout (limpa cookie) ---
-router.post('/api/logout', (_req: any, res: any) => {
-  res.clearCookie('token', { httpOnly: true, sameSite: 'lax' });
-  res.sendStatus(200);
+router.post('/api/logout', (req: any, res: any) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+  });
+  return res.json({ message: 'Logout realizado com sucesso' });
 });
 
 router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {

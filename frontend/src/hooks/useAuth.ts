@@ -1,16 +1,25 @@
-// src/hooks/useAuth.ts
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+
+interface CheckAuthResponse {
+  user?: {
+    id: number;
+    email: string;
+  };
+}
 
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Checa se o token é válido com base no cookie (enviado automaticamente)
   const checkAuth = async () => {
     try {
-      await api.get('/me', { withCredentials: true });
-      setIsAuthenticated(true);
+      const res = await api.get<CheckAuthResponse>('/check', { withCredentials: true });
+      if (res.data.user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
     } catch (err) {
       setIsAuthenticated(false);
     } finally {
@@ -22,7 +31,6 @@ export function useAuth() {
     checkAuth();
   }, []);
 
-  // Logout no backend + atualiza estado
   const logout = async () => {
     try {
       await api.post('/logout', {}, { withCredentials: true });
@@ -37,7 +45,6 @@ export function useAuth() {
     isAuthenticated,
     loading,
     logout,
-    // setIsAuthenticated só se você quiser alterar manualmente no login
     setAuthenticated: setIsAuthenticated,
   };
 }

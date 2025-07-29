@@ -18,6 +18,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { UrlListlist } from "./UrlListlist"; // seu componente de listagem
+import api from "../services/api";
 
 axios.defaults.baseURL = "https://app3.apinonshops.store";
 axios.defaults.withCredentials = true;
@@ -97,7 +98,7 @@ export const UrlManager: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!window.confirm("Tem certeza que deseja deletar essa URL?")) return;
     try {
-      await axios.delete(`/api/urls/${id}`);
+      await api.delete(`/api/urls/${id}`);
       setUrls((prev) => prev.filter((u) => u.id !== id));
       if (editingId === id) setEditingId(null);
     } catch {

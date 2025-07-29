@@ -123,38 +123,49 @@ router.post('/api/login', async (req: any, res: any) => {
     res.status(500).json({ error: 'Erro no login' });
   }
 });
-
-// Na sua rota de redirecionamento:
-router.get('/:slug', async (req: any, res: any) => {
-  const slug = req.params.slug;
-  const ip = req.headers['x-forwarded-for']?.toString()?.split(',')[0] ||
+// Rota para retornar a localização do visitante com base no IP
+router.get('/api/ip-info', authMiddleware, async (req: any, res: any) => {
+  const ip = req.headers['x-forwarded-for']?.toString()?.split(',')[0] || 
              req.socket.remoteAddress || '';
-  const geo = geoip.lookup(ip) || { country: null, region: null };
 
-  const url = await prisma.url.findUnique({ where: { slug } });
-  if (!url) return res.status(404).send('URL não encontrada');
+  const geo = geoip.lookup(ip);
 
-  await prisma.visit.create({
-    data: { urlId: url.id, country: geo.country, region: geo.region },
+  if (!geo) {
+    return res.status(404).json({ error: 'Não foi possível localizar o IP.' });
+  }
+
+  return res.json({
+    ip,
+    country: geo.country || null,
+    region: geo.region || null,
+    city: geo.city || null,
+    ll: geo.ll || null, // Latitude e Longitude
+    timezone: geo.timezone || null
   });
-
-  await prisma.url.update({ where: { id: url.id }, data: { visits: { increment: 1 } } });
-
-  res.redirect(url.original);
 });
 
 router.get('/api/urls/:id/geo', authMiddleware, async (req: any, res: any) => {
   const urlId = Number(req.params.id);
   const userId = req.userId!;
-  const url = await prisma.url.findUnique({ where: { id: urlId } });
-  if (!url || url.userId !== userId) return res.status(404).json({ error: 'URL não encontrada' });
 
-  const geo = await prisma.visit.groupBy({
-    by: ['country'],
+  const url = await prisma.url.findUnique({ where: { id: urlId } });
+  if (!url || url.userId !== userId)
+    return res.status(404).json({ error: 'URL não encontrada' });
+
+  const geoData = await prisma.visit.groupBy({
+    by: ['country', 'region', 'city'],
     where: { urlId },
-    _count: { country: true },
+    _count: { _all: true },
   });
-  res.json(geo.map(g => ({ country: g.country || 'Unknown', count: g._count.country })));
+
+  const result = geoData.map(g => ({
+    country: g.country || 'Desconhecido',
+    region: g.region || 'Desconhecido',
+    city: g.city || 'Desconhecido',
+    count: g._count._all,
+  }));
+
+  res.json(result);
 });
 
 // --- Verifica usuário logado ---
@@ -301,24 +312,38 @@ router.delete('/api/urls/:id', authMiddleware, async (req: AuthRequest, res: any
   }
 });
 
-// --- Redirect
 router.get('/:slug', async (req: any, res: any) => {
-  const { slug } = req.params;
-  
+  const slug = req.params.slug;
+
+  const ip =
+    req.headers['x-forwarded-for']?.toString()?.split(',')[0] ||
+    req.socket.remoteAddress ||
+    '';
+
+  const geo = geoip.lookup(ip);
+
   try {
     const url = await prisma.url.findUnique({ where: { slug } });
     if (!url) return res.status(404).send('URL não encontrada');
 
+    // Salva o acesso com geolocalização
     await prisma.visit.create({
       data: {
         urlId: url.id,
+        country: geo?.country || null,
+        region: geo?.region || null,
+        city: geo?.city || null,
+        ip: ip,
+        timestamp: new Date(),
       },
     });
 
+    // Incrementa o contador de visitas
     await prisma.url.update({
       where: { slug },
       data: { visits: { increment: 1 } },
     });
+
     return res.redirect(url.original);
   } catch (err) {
     console.error(err);

@@ -190,8 +190,9 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
       <main className="hero">
         <h1>Encurte e Compartilhe URLs com Facilidade</h1>
         <p>
-          Transforme links longos em URLs curtas, fáceis de compartilhar e acompanhar.
-          Acompanhe estatísticas e gerencie suas URLs com segurança.
+          Transforme links longos em URLs curtas, fáceis de compartilhar e acompanhar. 
+          Aqui você também pode personalizar suas URLs, editá-las, acompanhar o tráfego detalhado que suas URLs personalizadas recebem, 
+          incluindo as regiões de onde estão sendo mais acessadas, tudo isso com total segurança e controle.
         </p>
         <div className="hero-buttons">
           <button onClick={onRegisterClick} className="btn btn-primary">Comece Agora</button>

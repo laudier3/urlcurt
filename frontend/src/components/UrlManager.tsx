@@ -152,6 +152,7 @@ export const UrlManager: React.FC = () => {
                   <TableCell>
                     {editingId === url.id ? (
                       <TextField
+                        style={{width: 80}}
                         value={updatedUrls[url.id]?.slug || ""}
                         onChange={(e) =>
                           handleChange(url.id, "slug", e.target.value)

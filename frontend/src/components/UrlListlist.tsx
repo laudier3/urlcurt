@@ -1,30 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
-import api from '../services/api';
+  CartesianGrid,
+  Brush,
+} from "recharts";
+import api from "../services/api";
+import { GeoLocationStats } from "./GeoLocationStats";
 
-type Url = {
-  id: number;
-  original: string;
-  slug: string;
-  visits: number;
-  createdAt: string;
-};
+type Url = { id: number; original: string; slug: string; visits: number; createdAt: string };
+type TrafficEntry = { date: string; count: number };
+type Props = { urls: Url[] };
 
-type TrafficEntry = {
-  date: string;
-  count: number;
-};
-
-type Props = {
-  urls: Url[];
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        backgroundColor: "#fff",
+        border: "1px solid #ccc",
+        padding: "8px 12px",
+        borderRadius: 8,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        fontSize: 14,
+      }}>
+        <div><strong>{new Date(label).toLocaleDateString("pt-BR")}</strong></div>
+        <div>Visitas: {payload[0].value}</div>
+      </div>
+    );
+  }
+  return null;
 };
 
 export const UrlListlist: React.FC<Props> = ({ urls }) => {
@@ -42,22 +50,17 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
   const fetchTrafficData = async (urlId: number) => {
     setLoadingTraffic(urlId);
     try {
-      const res = await api.get<TrafficEntry[]>(`/urls/${urlId}/traffic`, {
-        withCredentials: true,
-      });
-
+      const res = await api.get<TrafficEntry[]>(`/urls/${urlId}/traffic`, { withCredentials: true });
       setTrafficData((prev) => ({ ...prev, [urlId]: res.data }));
       setExpandedUrlId(urlId);
     } catch (err) {
-      console.error('Erro ao buscar dados de tráfego', err);
+      console.error("Erro fetching traffic", err);
     } finally {
       setLoadingTraffic(null);
     }
   };
 
-  if (urls.length === 0) {
-    return <p>Você ainda não criou nenhuma URL.</p>;
-  }
+  if (urls.length === 0) return <p>Você ainda não criou nenhuma URL.</p>;
 
   return (
     <div>
@@ -140,32 +143,45 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
               </button>
 
               {isExpanded && history && (
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    backgroundColor: '#f4f4f4',
-                    padding: '10px',
-                    borderRadius: '6px',
-                  }}
-                >
+                <div style={{ marginTop: "1rem", backgroundColor: "#f4f4f4", padding: 10, borderRadius: 6 }}>
                   <h4>Tráfego nos últimos dias</h4>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={history}>
-                      <CartesianGrid strokeDasharray="3 3" />
+                  <ResponsiveContainer width="100%" height={260}>
+                    <AreaChart data={history} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="10%" stopColor="#4f46e5" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="5 5" stroke="#e0e0e0" />
                       <XAxis
                         dataKey="date"
-                        tickFormatter={(date) =>
-                          new Date(date).toLocaleDateString('pt-BR', {
-                            day: '2-digit',
-                            month: '2-digit',
-                          })
-                        }
+                        tickFormatter={(date) => new Date(date).toLocaleDateString("pt-BR", {
+                          day: "2-digit", month: "2-digit",
+                        })}
+                        tick={{ fill: "#666", fontSize: 12 }}
+                        axisLine={false} tickLine={false}
                       />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="count" stroke="#4f46e5" />
-                    </LineChart>
+                      <YAxis
+                        allowDecimals={false}
+                        tick={{ fill: "#666", fontSize: 12 }}
+                        axisLine={false} tickLine={false}
+                        width={40}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Area
+                        type="monotone"
+                        dataKey="count"
+                        stroke="#4f46e5"
+                        fill="url(#colorVisits)"
+                        strokeWidth={2.5}
+                        dot={{ r: 3, stroke: "#4f46e5", strokeWidth: 1, fill: "#fff" }}
+                        activeDot={{ r: 6, stroke: "#4f46e5", strokeWidth: 2, fill: "#fff" }}
+                      />
+                      <Brush dataKey="date" height={30} stroke="#8884d8" />
+                    </AreaChart>
                   </ResponsiveContainer>
+                  <GeoLocationStats urlId={url.id} />
                 </div>
               )}
             </li>

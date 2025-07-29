@@ -107,8 +107,8 @@ const App: React.FC = () => {
   const handleLogout = async () => {
     setLoggingOut(true);
     await logout();
-    deleteAllCookies();
     setLoggingOut(false);
+    deleteAllCookies();
 
     // ⚠️ Força redirecionamento sem deixar /app no histórico
     window.location.replace('/');

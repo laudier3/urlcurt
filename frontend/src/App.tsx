@@ -106,13 +106,15 @@ const App: React.FC = () => {
 
   const handleLogout = async () => {
     setLoggingOut(true);
-    await logout();
-    setLoggingOut(false);
-    deleteAllCookies();
 
-    // ⚠️ Força redirecionamento sem deixar /app no histórico
-    window.location.replace('/');
-    window.close();
+    try {
+      await logout(); // já chama o backend e limpa o cookie
+    } catch (err) {
+      console.error('Erro no logout:', err);
+    } finally {
+      setLoggingOut(false);
+      window.location.href = '/'; // redireciona para o início
+    }
   };
 
   async function handleNewUrl() {

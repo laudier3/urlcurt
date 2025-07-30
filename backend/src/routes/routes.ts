@@ -169,13 +169,81 @@ router.get('/api/urls/:id/geo', authMiddleware, async (req: any, res: any) => {
 });
 
 // --- Verifica usuário logado ---
-router.get('/api/me', authMiddleware, async (req: AuthRequest, res: any) => {
-  const user = await prisma.user.findUnique({
-    where: { id: req.userId! },
-    select: { id: true, email: true },
-  });
-  if (!user) return res.sendStatus(404);
-  res.json(user);
+router.get("/api/me", authMiddleware, async (req: AuthRequest, res:any) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        age: true,
+      },
+    });
+
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
+
+    return res.json(user);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
+
+// Atualizar perfil completo do usuário autenticado
+router.put('/api/me', authMiddleware, async (req: AuthRequest, res: any) => {
+  const userId = req.userId!;
+  const { name, email, phone, age } = req.body;
+
+  try {
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name,
+        email,
+        phone,
+        age: age ? Number(age) : null,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        age: true,
+      },
+    });
+
+    res.json(updated);
+  } catch (err: any) {
+    console.error('Erro ao atualizar usuário:', err);
+    if (err.code === 'P2002') {
+      return res.status(400).json({ error: 'Email ou telefone já está em uso.' });
+    }
+    return res.status(500).json({ error: 'Erro ao atualizar usuário.' });
+  }
+});
+
+router.post('/api/recover-password', async (req: any, res: any) => {
+  const { phone } = req.body;
+  if (!phone) return res.status(400).json({ error: 'Telefone é obrigatório' });
+
+  try {
+    const user = await prisma.user.findUnique({ where: { phone } });
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado com esse telefone' });
+
+    // Usando a função generateToken para criar o token de recuperação
+    const resetToken = generateToken({ id: user.id, email: user.email });
+    const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+
+    // Enviando o link de recuperação por SMS
+    await sendSms(phone, `Clique no link para redefinir sua senha: ${resetLink}`);
+
+    res.json({ message: 'Link de recuperação enviado por SMS' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao enviar link de recuperação' });
+  }
 });
 
 router.get('/api/check', (req: any, res: any) => {

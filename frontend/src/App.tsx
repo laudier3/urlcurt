@@ -106,6 +106,8 @@ const App: React.FC = () => {
 
   const handleLogout = async () => {
     setLoggingOut(true);
+    deleteAllCookies()
+    window.location.href = '/'; // redireciona para o início
 
     try {
       await logout(); // já chama o backend e limpa o cookie
@@ -113,8 +115,6 @@ const App: React.FC = () => {
       console.error('Erro no logout:', err);
     } finally {
       setLoggingOut(false);
-      deleteAllCookies()
-      window.location.href = '/'; // redireciona para o início
     }
   };
 

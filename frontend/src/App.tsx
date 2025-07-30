@@ -112,7 +112,7 @@ const App: React.FC = () => {
 
     // ⚠️ Força redirecionamento sem deixar /app no histórico
     window.location.replace('/');
-    //window.close();
+    window.close();
   };
 
   async function handleNewUrl() {

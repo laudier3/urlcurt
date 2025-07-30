@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://app3.apinonshops.store/api', //"https://app3.apinonshops.store/api", //'https://app3.apinonshops.store/api',
+  baseURL: 'https://app3.apinonshops.store', //"https://app3.apinonshops.store/api", //'https://app3.apinonshops.store/api',
   withCredentials: true
 });
 

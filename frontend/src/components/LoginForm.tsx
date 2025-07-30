@@ -1,55 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-//import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useAuth } from '../hooks/useAuth';
 
-interface Props {
-  onLogin(): void;
-}
-
-const LoginForm: React.FC<Props> = ({ onLogin }) => {
+const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-    return null;
-  }
-
-  const token = getCookie('token');
-  if (token) {
-    console.log('Token encontrado:', token);
-  } else {
-    console.log('Token não encontrado');
-  }
-
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      await api.post(
-        '/login',
-        { email, password },
-        { withCredentials: true }
-      );
-
-      onLogin();
-      navigate('/app');
+      await login(email, password);
+      navigate('/app'); // redireciona sem recarregar
+      window.location.reload()
     } catch (err: any) {
       setError(err.response?.data?.message || 'Usuário ou senha incorreta');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -83,19 +60,15 @@ const LoginForm: React.FC<Props> = ({ onLogin }) => {
             color: '#888',
             userSelect: 'none',
           }}
-          aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
           role="button"
           tabIndex={0}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') setShowPassword(prev => !prev);
-          }}
         >
-          {/*showPassword ? <FaEyeSlash /> : <FaEye />*/}
+          {showPassword ? '🙈' : '👁️'}
         </span>
       </div>
 
       <button type="submit" disabled={loading}>
-        {loading ? 'Carregando...' : 'Entrar'}
+        {loading ? 'Entrando...' : 'Entrar'}
       </button>
 
       {error && <p style={{ color: 'red', marginTop: 8 }}>{error}</p>}

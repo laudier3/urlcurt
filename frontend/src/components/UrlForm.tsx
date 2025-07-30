@@ -22,7 +22,7 @@ const UrlForm: React.FC<Props> = ({ onNewUrl }) => {
 
     try {
       const res = await api.post<CreateUrlResponse>(
-        '/urls',
+        '/api/urls',
         { originalUrl, customSlug: customSlug || undefined },
         { withCredentials: true }
       );

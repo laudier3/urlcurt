@@ -37,12 +37,13 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
     }
 
     try {
-      const res = await api.post<RegisterResponse>('/register', {
+      const res = await api.post<RegisterResponse>('/api/register', {
         name,
         email,
         password,
         phone,
         age,
+        withCredentials: true,
       });
 
       if (res.data.token) {

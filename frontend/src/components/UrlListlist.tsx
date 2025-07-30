@@ -50,7 +50,7 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
   const fetchTrafficData = async (urlId: number) => {
     setLoadingTraffic(urlId);
     try {
-      const res = await api.get<TrafficEntry[]>(`/urls/${urlId}/traffic`, { withCredentials: true });
+      const res = await api.get<TrafficEntry[]>(`/api/urls/${urlId}/traffic`, { withCredentials: true });
       setTrafficData((prev) => ({ ...prev, [urlId]: res.data }));
       setExpandedUrlId(urlId);
     } catch (err) {

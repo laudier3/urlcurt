@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Box,
   Typography,
@@ -11,6 +10,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
+import api from "../services/api";
 
 interface GeoData {
   country: string;
@@ -31,7 +31,7 @@ export const GeoLocationStats: React.FC<Props> = ({ urlId }) => {
   useEffect(() => {
     const fetchGeo = async () => {
       try {
-        const res = await axios.get<GeoData[]>(`/api/urls/${urlId}/geo`);
+        const res = await api.get<GeoData[]>(`/api/urls/${urlId}/geo`);
         setData(res.data);
       } catch (err: any) {
         setError(err.response?.data?.error || "Erro ao buscar dados geográficos");

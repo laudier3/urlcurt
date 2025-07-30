@@ -14,7 +14,7 @@ export function useAuth() {
 
   const checkAuth = async () => {
     try {
-      const res = await api.get<CheckAuthResponse>('/check', { withCredentials: true });
+      const res = await api.get<CheckAuthResponse>('/api/check', { withCredentials: true });
       if (res.data.user) {
         setIsAuthenticated(true);
       } else {
@@ -31,9 +31,19 @@ export function useAuth() {
     checkAuth();
   }, []);
 
+  const login = async (email: string, password: string) => {
+    try {
+      await api.post('/api/login', { email, password }, { withCredentials: true });
+      setIsAuthenticated(true);
+    } catch (err) {
+      setIsAuthenticated(false);
+      throw err; // Opcional: propagar erro para tratar no componente
+    }
+  };
+
   const logout = async () => {
     try {
-      await api.post('/logout', {}, { withCredentials: true });
+      await api.post('/api/logout', {}, { withCredentials: true });
     } catch (err) {
       console.error('Erro ao fazer logout', err);
     } finally {
@@ -44,6 +54,7 @@ export function useAuth() {
   return {
     isAuthenticated,
     loading,
+    login,               // <== função login adicionada aqui
     logout,
     setAuthenticated: setIsAuthenticated,
   };

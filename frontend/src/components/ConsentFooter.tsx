@@ -70,7 +70,7 @@ const styles: Record<string, React.CSSProperties> = {
     bottom: 15,
     left: 0,
     right: 0,
-    backgroundColor: '#2c3e5088',
+    backgroundColor: '#2c3e50ea',
     color: '#ecf0f1',
     padding: '1rem 2rem',
     display: 'flex',

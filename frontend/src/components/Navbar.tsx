@@ -47,15 +47,27 @@ const Navbar: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const deleteAllCookies = () => {
+    const cookies = document.cookie.split(";");
+
+    for (const cookie of cookies) {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    }
+    };
+
   /*const handleLogout = async () => {
     handleMenuClose();
     await logout();
     navigate("/");
     window.location.reload()
   };*/
+  
   const handleLogout = async () => {
     handleMenuClose();
     Cookies.remove("token"); // 🧼 remove o cookie do token
+    deleteAllCookies()
     await logout();          // 👈 limpa o estado global/contexto (user)
     navigate("/");
     };

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 import "./nav.css"
+import api from "../services/api";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -64,15 +65,29 @@ const Navbar: React.FC = () => {
     window.location.reload()
   };*/
   
-  const handleLogout = async () => {
+  /*const handleLogout = async () => {
     handleMenuClose();
     Cookies.remove("token"); // 🧼 remove o cookie do token
     deleteAllCookies()
     await logout();          // 👈 limpa o estado global/contexto (user)
     navigate("/");
     window.location.reload()
-  };
+  };*/
+  const handleLogout = async () => {
+  handleMenuClose();
 
+  try {
+    await api.post('/api/logout', {},
+      { withCredentials: true } // 🔥 ESSENCIAL!
+    );
+  } catch (err) {
+    //console.error('Erro ao fazer logout:', err);
+  }
+
+  await logout(); // limpa estado do usuário
+  navigate('/');
+  window.location.reload();
+};
 
   const handleEditProfile = () => {
     handleMenuClose();

@@ -15,7 +15,7 @@ import {
 import { useNavigate } from "react-router-dom";
 //import SettingsIcon from "@mui/icons-material/Settings";
 import { useAuth } from "../hooks/useAuth";
-import Cookies from "js-cookie";
+//import Cookies from "js-cookie";
 import "./nav.css"
 import api from "../services/api";
 
@@ -75,6 +75,7 @@ const Navbar: React.FC = () => {
   };*/
   const handleLogout = async () => {
   handleMenuClose();
+  deleteAllCookies()
 
   try {
     await api.post('/api/logout', {},

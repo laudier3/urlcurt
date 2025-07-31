@@ -32,6 +32,7 @@ export const GeoLocationStats: React.FC<Props> = ({ urlId }) => {
     const fetchGeo = async () => {
       try {
         const res = await api.get<GeoData[]>(`/api/urls/${urlId}/geo`);
+        console.log(res)
         setData(res.data);
       } catch (err: any) {
         setError(err.response?.data?.error || "Erro ao buscar dados geográficos");

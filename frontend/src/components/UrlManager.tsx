@@ -100,7 +100,7 @@ export const UrlManager: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!window.confirm("Tem certeza que deseja deletar essa URL?")) return;
     try {
-      await api.delete(`/urls/${id}`, { withCredentials: true });
+      await api.delete(`/api/urls/${id}`, { withCredentials: true });
       setUrls((prev) => prev.filter((u) => u.id !== id));
       if (editingId === id) setEditingId(null);
     } catch {

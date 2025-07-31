@@ -6,9 +6,8 @@ import { useAuth } from './hooks/useAuth';
 import Loading from './components/Loading';
 
 const App: React.FC = () => {
-  const { loading } = useAuth();
-
-  if (loading) return <Loading/>;
+  //const { loading } = useAuth();
+  //if (loading) return <Loading/>;
 
   return (
     <Router>

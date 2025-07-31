@@ -70,7 +70,8 @@ const Navbar: React.FC = () => {
     deleteAllCookies()
     await logout();          // 👈 limpa o estado global/contexto (user)
     navigate("/");
-    };
+    window.location.reload()
+  };
 
 
   const handleEditProfile = () => {

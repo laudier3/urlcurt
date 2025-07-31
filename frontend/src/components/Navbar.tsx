@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
 
   await logout(); // limpa estado do usuário
   navigate('/');
-  //window.location.reload();
+  window.location.reload();
 };
 
   const handleEditProfile = () => {

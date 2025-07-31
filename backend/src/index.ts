@@ -6,10 +6,11 @@ import { router } from './routes/routes';
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000', // seu frontend
+  origin: ['http://localhost:3000', 'https://www.urlcurt.site'], // produção + dev
   credentials: true,
-  methods: 'GET,PUT,POST,OPTIONS,DELETE'
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 

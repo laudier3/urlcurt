@@ -263,8 +263,9 @@ router.get('/api/check', (req: any, res: any) => {
 router.post('/api/logout', (req: any, res: any) => {
   res.clearCookie('token', {
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
+    secure: true,           // ESSENCIAL para HTTPS
+    sameSite: 'None',       // ESSENCIAL para cross-site cookie
+    path: '/',              // garante que a exclusão funcione em todo o domínio
   });
   return res.json({ message: 'Logout realizado com sucesso' });
 });

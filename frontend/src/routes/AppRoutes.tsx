@@ -146,7 +146,7 @@ const AppRoutes: React.FC = () => {
                       <button
                         onClick={() => navigate("/manager")}
                         style={{
-                          marginRight: "10px",
+                          marginLeft: "60px",
                           display: "inline-block",
                           width: "65%",
                         }}

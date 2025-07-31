@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
     handleMenuClose();
     await logout();
     navigate("/");
-    window.location.reload()
+    //window.location.reload()
   };
 
   const handleEditProfile = () => {
@@ -68,6 +68,7 @@ const Navbar: React.FC = () => {
         boxShadow: "0 4px 15px rgba(79, 70, 229, 0.4)",
         py: 1,
         overflow: "visible",
+        borderRadius: 2,
       }}
     >
       <Toolbar

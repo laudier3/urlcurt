@@ -15,6 +15,7 @@ import {
 import { useNavigate } from "react-router-dom";
 //import SettingsIcon from "@mui/icons-material/Settings";
 import { useAuth } from "../hooks/useAuth";
+import Cookies from "js-cookie";
 import "./nav.css"
 
 const stringToColor = (string: string) => {
@@ -34,6 +35,7 @@ const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
+  //const [user, setUser] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -46,12 +48,18 @@ const Navbar: React.FC = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = async () => {
+  /*const handleLogout = async () => {
     handleMenuClose();
     await logout();
     navigate("/");
     //window.location.reload()
-  };
+  };*/
+
+    const handleLogout = () => {
+        Cookies.remove("token"); // ou o nome do cookie usado
+        logout() // se você usa context
+        navigate("/");
+    };
 
   const handleEditProfile = () => {
     handleMenuClose();

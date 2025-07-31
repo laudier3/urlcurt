@@ -35,7 +35,6 @@ const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
-  //const [user, setUser] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -52,14 +51,15 @@ const Navbar: React.FC = () => {
     handleMenuClose();
     await logout();
     navigate("/");
-    //window.location.reload()
+    window.location.reload()
   };*/
-
-    const handleLogout = () => {
-        Cookies.remove("token"); // ou o nome do cookie usado
-        logout() // se você usa context
-        navigate("/");
+  const handleLogout = async () => {
+    handleMenuClose();
+    Cookies.remove("token"); // 🧼 remove o cookie do token
+    await logout();          // 👈 limpa o estado global/contexto (user)
+    navigate("/");
     };
+
 
   const handleEditProfile = () => {
     handleMenuClose();

@@ -1,0 +1,193 @@
+.spinner-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: radial-gradient(#0f2027, #203a43, #2c5364);
+  overflow: hidden;
+}
+
+/* Spinner central */
+.loading-spinner {
+  z-index: 2;
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4f46e5;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+/* Animação do spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Planetas base */
+.planet {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.9;
+  animation: float 16s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Planetas do sistema solar */
+.planet.mercurio {
+  width: 10px;
+  height: 10px;
+  background: #b1b1b1;
+  top: 20%;
+  left: 10%;
+  animation-duration: 12s;
+}
+
+.planet.venus {
+  width: 20px;
+  height: 20px;
+  background: #e0c07d;
+  top: 40%;
+  left: 80%;
+  animation-duration: 18s;
+}
+
+.planet.terra {
+  width: 22px;
+  height: 22px;
+  background: #4fa3f7;
+  top: 10%;
+  left: 70%;
+  animation-duration: 16s;
+}
+
+.planet.marte {
+  width: 16px;
+  height: 16px;
+  background: #d14b4b;
+  top: 75%;
+  left: 50%;
+  animation-duration: 17s;
+}
+
+.planet.jupiter {
+  width: 40px;
+  height: 40px;
+  background: #d6a76c;
+  top: 60%;
+  left: 30%;
+  animation-duration: 20s;
+}
+
+.planet.saturno {
+  width: 38px;
+  height: 38px;
+  background: #f5d580;
+  top: 25%;
+  left: 60%;
+  animation-duration: 21s;
+}
+
+.planet.urano {
+  width: 30px;
+  height: 30px;
+  background: #76e2f4;
+  top: 50%;
+  left: 15%;
+  animation-duration: 22s;
+}
+
+.planet.netuno {
+  width: 30px;
+  height: 30px;
+  background: #4f6ef2;
+  top: 85%;
+  left: 75%;
+  animation-duration: 23s;
+}
+
+/* Animação flutuante */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-20px) translateX(15px);
+  }
+}
+
+.containerContato {
+  margin: auto;
+  margin-top: 10%;
+  max-width: 30%;
+}
+
+.containerSobre {
+  margin: auto;
+  margin-top: 5%;
+  max-width: 80%;
+  text-align: justify;
+}
+
+@media screen and (max-width: 726px) {
+  .containerContato {
+    max-width: 80%;
+  }
+}
+
+/*
+<div className="spinner-container">
+ 
+  <div className="planet mercurio"></div>
+  <div className="planet venus"></div>
+  <div className="planet terra"></div>
+  <div className="planet marte"></div>
+  <div className="planet jupiter"></div>
+  <div className="planet saturno"></div>
+  <div className="planet urano"></div>
+  <div className="planet netuno"></div>
+
+  
+  <div className="loading-spinner"></div>
+</div>
+
+*/
+/* LoadingSpinner.css */
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* fundo escuro com transparência */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: white;
+  margin-top: 15px;
+  font-size: 1.2rem;
+  font-family: Arial, sans-serif;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import api from '../services/api';
+import Navbar from "./Navbar";
 
 interface Props {
   onNewUrl(shortUrl: string): void;
@@ -38,26 +39,29 @@ const UrlForm: React.FC<Props> = ({ onNewUrl }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '1.5rem' }}>
-      <h2>Encurtar URL</h2>
-      <input
-        type="url"
-        placeholder="URL original"
-        value={originalUrl}
-        onChange={e => setOriginalUrl(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Slug personalizado (opcional)"
-        value={customSlug}
-        onChange={e => setCustomSlug(e.target.value)}
-      />
-      <button type="submit" disabled={loading}>
-        {loading ? 'Criando...' : 'Criar'}
-      </button>
-      {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
-    </form>
+    <>
+     <Navbar/>
+      <form onSubmit={handleSubmit} style={{ marginBottom: '1.5rem' }}>
+        <h2>Encurtar URL</h2>
+        <input
+          type="url"
+          placeholder="URL original"
+          value={originalUrl}
+          onChange={e => setOriginalUrl(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Slug personalizado (opcional)"
+          value={customSlug}
+          onChange={e => setCustomSlug(e.target.value)}
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Criando...' : 'Criar'}
+        </button>
+        {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
+      </form>
+    </>
   );
 };
 

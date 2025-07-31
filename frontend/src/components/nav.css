@@ -1,0 +1,40 @@
+.users {
+    color: rgba(255,255,255,0.9);
+    font-weight: 600px;
+    user-select: none;
+    min-width: 100;
+    white-space: nowrap;
+    /*overflow: hidden;*/
+    text-overflow: ellipsis;
+    margin-left: -200px;
+}
+
+.logo {
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 1;
+    user-select: none;
+    color: #fff;
+}
+
+.avatar {
+    width: 36;
+    height: 36;
+    font-weight: bold;
+    cursor: default;
+}
+
+.setting {
+    margin-left: -20px;
+}
+
+@media screen and (max-width: 726px) {
+    .users{
+        margin-left: -200px;
+        font-size: 10px;
+    }
+
+    .setting {
+        margin-left: -10px;
+    }
+}

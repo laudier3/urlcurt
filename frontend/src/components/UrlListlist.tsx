@@ -68,7 +68,7 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
 
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {urls.map((url) => {
-          const shortUrl = `https://app3.apinonshops.store/${url.slug}`;
+          const shortUrl = `http://localhost:4000/${url.slug}`;
           const isExpanded = expandedUrlId === url.id;
           const isLoading = loadingTraffic === url.id;
           const history = trafficData[url.id];

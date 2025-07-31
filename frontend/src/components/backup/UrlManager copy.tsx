@@ -16,8 +16,8 @@ import {
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { UrlListlist } from "./UrlListlist"; // seu componente de listagem
-import api from "../services/api";
+import { UrlListlist } from "../UrlListlist"; // seu componente de listagem
+import api from "../../services/api";
 
 interface UrlData {
   id: number;

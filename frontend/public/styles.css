@@ -1,0 +1,137 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #f5f7fa;
+  color: #333;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 3rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+input, button {
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+button {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+button:hover {
+  background-color: #4338ca;
+}
+
+button:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+.url-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.url-item a {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.url-item button {
+  width: auto;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.a {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  overflow: hidden;
+  max-width: 600px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a:hover {
+  background-color: #4338ca;
+}
+
+.a:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+.texto {
+  overflow: hidden;
+  max-width: 750px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.textos {
+  overflow: hidden;
+  max-width: 950px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 726px) {
+  .texto {
+    overflow: hidden;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  h1 {
+    font-size: 25px;
+    margin: 10px;
+  }
+
+  button {
+    font-size: 12px;
+    margin-top: -1px;
+    margin: 5px;
+    width: 100%;
+  }
+
+  .a {
+    font-size: 12px;
+  }
+}

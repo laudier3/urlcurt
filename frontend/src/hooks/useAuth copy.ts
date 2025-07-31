@@ -1,45 +1,46 @@
+// src/hooks/useAuth.ts
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 
-export const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
 
+export function useAuth() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Simula verificação de sessão
   useEffect(() => {
-    const checkAuth = async () => {
-      setLoading(true);
+    async function checkAuth() {
       try {
-        // Verifica se há uma sessão válida no backend
-        const res = await api.get('/api/check-auth', { withCredentials: true });
-
-        if (res.status === 200) {
-          setIsAuthenticated(true);
-          localStorage.setItem('user', 'true'); // apenas marca como logado
-        } else {
-          setIsAuthenticated(false);
-          localStorage.removeItem('user');
-        }
-      } catch (err) {
+        const res = await api.get('/api/check', { withCredentials: true });
+        setIsAuthenticated(res.status === 200);
+      } catch {
         setIsAuthenticated(false);
-        localStorage.removeItem('user');
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     checkAuth();
   }, []);
 
-  const logout = async () => {
-    try {
-      await api.post('/api/logout', {}, { withCredentials: true });
-    } catch (err) {
-      console.error('Erro ao fazer logout no servidor:', err);
+  const login = async (email: string, password: string) => {
+    const res = await api.post('/api/login', { email, password }, { withCredentials: true });
+    if (res.status === 200) {
+      setIsAuthenticated(true);
+    } else {
+      throw new Error('Credenciais inválidas');
     }
+  };
 
-    localStorage.removeItem('user');
+  const logout = async () => {
+    await api.post('/api/logout', {}, { withCredentials: true });
     setIsAuthenticated(false);
   };
 
-  return { isAuthenticated, loading, logout };
-};
+  return {
+    isAuthenticated,
+    loading,
+    login,     // ✅ Adicionado aqui
+    logout,
+  };
+}

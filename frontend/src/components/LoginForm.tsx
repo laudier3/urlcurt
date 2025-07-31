@@ -19,8 +19,8 @@ const LoginForm: React.FC = () => {
 
     try {
       await login(email, password);
-      navigate('/app'); // redireciona sem recarregar
-      window.location.reload()
+      navigate('/app');
+      window.location.reload();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Usuário ou senha incorreta');
     } finally {
@@ -29,8 +29,8 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+    <form onSubmit={handleSubmit} className="container" style={styles.form}>
+      <h2 style={styles.title}>Login</h2>
 
       <input
         type="email"
@@ -38,28 +38,21 @@ const LoginForm: React.FC = () => {
         value={email}
         onChange={e => setEmail(e.target.value)}
         required
+        style={styles.input}
       />
 
-      <div style={{ position: 'relative', marginBottom: '1rem' }}>
+      <div style={styles.passwordWrapper}>
         <input
           type={showPassword ? 'text' : 'password'}
           placeholder="Senha"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
-          style={{ paddingRight: '2.5rem', width: '100%' }}
+          style={{ ...styles.input, paddingRight: '2.5rem' }}
         />
         <span
           onClick={() => setShowPassword(prev => !prev)}
-          style={{
-            position: 'absolute',
-            right: '10px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            cursor: 'pointer',
-            color: '#888',
-            userSelect: 'none',
-          }}
+          style={styles.eyeIcon}
           role="button"
           tabIndex={0}
         >
@@ -67,13 +60,108 @@ const LoginForm: React.FC = () => {
         </span>
       </div>
 
-      <button type="submit" disabled={loading}>
+      <button type="submit" disabled={loading} style={styles.button}>
         {loading ? 'Entrando...' : 'Entrar'}
       </button>
 
-      {error && <p style={{ color: 'red', marginTop: 8 }}>{error}</p>}
+      {error && <p style={styles.error}>{error}</p>}
+
+      <div style={styles.linkContainer}>
+        <span style={{ marginRight: 6, color: '#777' }}>Primeira vez na UrlCurt?</span>
+        <button
+          type="button"
+          onClick={() => navigate('/register')}
+          style={styles.linkButton}
+        >
+          Criar conta
+        </button>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => navigate('/')}
+        style={{ ...styles.linkButton, marginTop: '12px', color: '#444' }}
+      >
+        Voltar para Home
+      </button>
+      <button
+        type="button"
+        onClick={() => navigate('/recover-password')}
+        style={{ ...styles.linkButton, marginTop: '12px', color: '#007bff' }}
+      >
+        Esqueci minha senha
+      </button>
+
     </form>
   );
+};
+
+const styles: { [key: string]: React.CSSProperties } = {
+  form: {
+    maxWidth: '400px',
+    margin: '40px auto',
+    padding: '30px',
+    background: '#f9f9f9',
+    borderRadius: '10px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  },
+  title: {
+    marginBottom: '24px',
+    textAlign: 'center',
+    fontWeight: 600,
+  },
+  input: {
+    width: '100%',
+    padding: '12px',
+    marginBottom: '16px',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+  },
+  passwordWrapper: {
+    position: 'relative',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    cursor: 'pointer',
+    color: '#888',
+    userSelect: 'none',
+  },
+  button: {
+    width: '100%',
+    padding: '12px',
+    backgroundColor: '#4F46E5',
+    color: 'white',
+    fontWeight: 600,
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: '10px',
+    fontWeight: 500,
+  },
+  linkContainer: {
+    marginTop: '20px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '14px',
+  },
+  linkButton: {
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    color: '#4F46E5',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+    fontSize: '14px',
+  },
 };
 
 export default LoginForm;

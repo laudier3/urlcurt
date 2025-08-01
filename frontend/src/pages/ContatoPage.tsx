@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
 import './LoadingSpinner.css';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../components/Loading';
 
 interface ContactPageData {
   name: string;
@@ -12,6 +14,8 @@ const ContactPage: React.FC = () => {
   const service_email = process.env.REACT_APP_YOUR_SERVICE_ID!;
   const templete_email = process.env.REACT_APP_YOUR_TEMPLATE_ID!;
   const user_email = process.env.REACT_APP_YOUR_USER_ID!;
+
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState<ContactPageData>({
     name: '',
@@ -58,6 +62,10 @@ const ContactPage: React.FC = () => {
           setStatus('Mensagem enviada com sucesso!');
           setFormData({ name: '', email: '', message: '' });
           setIsLoading(false);
+          setTimeout(() => {
+            <Loading/>
+            navigate("/")
+          }, 5000);
         },
         (error) => {
           console.error('Erro ao enviar e-mail:', error);

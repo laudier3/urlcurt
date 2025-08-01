@@ -66,7 +66,7 @@ const ContactPage: React.FC = () => {
           setTimeout(() => {
             setShowSuccessModal(false);
             navigate('/');
-          }, 6000);
+          }, 10000);
         },
         (error) => {
           console.error('Erro ao enviar e-mail:', error);

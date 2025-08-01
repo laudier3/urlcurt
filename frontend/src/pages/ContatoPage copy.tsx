@@ -15,7 +15,7 @@ const ContactPage: React.FC = () => {
   const templete_email = process.env.REACT_APP_YOUR_TEMPLATE_ID!;
   const user_email = process.env.REACT_APP_YOUR_USER_ID!;
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState<ContactPageData>({
     name: '',
@@ -25,7 +25,6 @@ const ContactPage: React.FC = () => {
 
   const [status, setStatus] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
   const validateEmail = (email: string): boolean => {
     return /\S+@\S+\.\S+/.test(email);
@@ -60,13 +59,13 @@ const ContactPage: React.FC = () => {
       .send(service_email, templete_email, { ...formData }, user_email)
       .then(
         () => {
+          setStatus('Mensagem enviada com sucesso!');
           setFormData({ name: '', email: '', message: '' });
           setIsLoading(false);
-          setShowSuccessModal(true);
           setTimeout(() => {
-            setShowSuccessModal(false);
-            navigate('/');
-          }, 4000);
+            <Loading/>
+            navigate("/")
+          }, 5000);
         },
         (error) => {
           console.error('Erro ao enviar e-mail:', error);
@@ -82,18 +81,6 @@ const ContactPage: React.FC = () => {
         <div className="loading-overlay">
           <div className="loading-spinner"></div>
           <p className="loading-text">Enviando sua mensagem...</p>
-        </div>
-      )}
-
-      {showSuccessModal && (
-        <div style={modalOverlayStyle}>
-          <div style={modalStyle}>
-            <h3 style={{ marginBottom: '10px' }}>Mensagem enviada com sucesso!</h3>
-            <p>Entraremos em contato em breve.</p>
-            <button onClick={() => setShowSuccessModal(false)} style={closeButtonStyle}>
-              OK
-            </button>
-          </div>
         </div>
       )}
 
@@ -142,43 +129,10 @@ const ContactPage: React.FC = () => {
           Enviar
         </button>
 
-        {status && <p style={{ color: 'red' }}>{status}</p>}
+        <p>{status}</p>
       </form>
     </div>
   );
 };
 
 export default ContactPage;
-
-// 🎨 Estilos do modal
-const modalOverlayStyle: React.CSSProperties = {
-  position: 'fixed',
-  top: 0, left: 0,
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(0,0,0,0.5)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  zIndex: 9999,
-};
-
-const modalStyle: React.CSSProperties = {
-  backgroundColor: '#fff',
-  padding: '30px',
-  borderRadius: '10px',
-  textAlign: 'center',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-  maxWidth: '400px',
-  width: '80%',
-};
-
-const closeButtonStyle: React.CSSProperties = {
-  marginTop: '15px',
-  padding: '8px 16px',
-  backgroundColor: '#4F46E5',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-};

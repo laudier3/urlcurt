@@ -9,6 +9,16 @@
     margin-left: -185px;
 }
 
+.text {
+    color: rgba(255,255,255,0.9);
+    font-weight: 600px;
+    user-select: none;
+    min-width: 100;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .logo {
     cursor: pointer;
     font-weight: 700;

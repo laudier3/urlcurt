@@ -11,13 +11,12 @@ import {
   Tooltip,
   Avatar,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-//import SettingsIcon from "@mui/icons-material/Settings";
 import { useAuth } from "../hooks/useAuth";
-//import Cookies from "js-cookie";
-import "./nav.css"
 import api from "../services/api";
+import "./nav.css";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -36,6 +35,7 @@ const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -50,45 +50,25 @@ const Navbar: React.FC = () => {
 
   const deleteAllCookies = () => {
     const cookies = document.cookie.split(";");
-
     for (const cookie of cookies) {
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
     }
-    };
+  };
 
-  /*const handleLogout = async () => {
+  const handleLogout = async () => {
     handleMenuClose();
+    deleteAllCookies();
+
+    try {
+      await api.post("/api/logout", {}, { withCredentials: true });
+    } catch {}
+
     await logout();
     navigate("/");
-    window.location.reload()
-  };*/
-  
-  /*const handleLogout = async () => {
-    handleMenuClose();
-    Cookies.remove("token"); // 🧼 remove o cookie do token
-    deleteAllCookies()
-    await logout();          // 👈 limpa o estado global/contexto (user)
-    navigate("/");
-    window.location.reload()
-  };*/
-  const handleLogout = async () => {
-  handleMenuClose();
-  deleteAllCookies()
-
-  try {
-    await api.post('/api/logout', {},
-      { withCredentials: true } // 🔥 ESSENCIAL!
-    );
-  } catch (err) {
-    //console.error('Erro ao fazer logout:', err);
-  }
-
-  await logout(); // limpa estado do usuário
-  navigate('/');
-  window.location.reload();
-};
+    window.location.reload();
+  };
 
   const handleEditProfile = () => {
     handleMenuClose();
@@ -116,14 +96,17 @@ const Navbar: React.FC = () => {
           mx: "auto",
           width: "100%",
           px: { xs: 2, sm: 3 },
-          overflow: "visible",
-          position: "relative",
         }}
       >
         <Typography
-          variant="h5"
+          variant={isMobile ? "h6" : "h5"}
           onClick={() => navigate("/app")}
           className="logo"
+          sx={{
+            cursor: "pointer",
+            fontWeight: "bold",
+            flexShrink: 0,
+          }}
         >
           UrlCurt
         </Typography>
@@ -132,19 +115,33 @@ const Navbar: React.FC = () => {
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: 2,
-            position: "relative",
+            gap: { xs: 1, sm: 2 },
+            flexDirection: isMobile ? "column" : "row",
           }}
         >
           {user ? (
-            <div className="users">
-              <Typography
-                variant="body1"
-                className="users"
-                title={user.name}
-              >
-                Olá, <strong>{user.name}</strong>
-                <Tooltip title="Configurações" style={{marginLeft: "-50px"}}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              {!isMobile && (
+                <Typography
+                  variant="body1"
+                  title={user.name}
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: 120,
+                  }}
+                >
+                  Olá, <strong>{user.name}</strong>
+                </Typography>
+              )}
+              <Tooltip title="Configurações">
                 <IconButton
                   onClick={handleMenuOpen}
                   color="inherit"
@@ -159,17 +156,14 @@ const Navbar: React.FC = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
                 >
-                 <Avatar
-                    sx={{
-                    bgcolor: stringToColor(user.name),
-                    }}
+                  <Avatar
+                    sx={{ bgcolor: stringToColor(user.name) }}
                     className="avatar"
-                >
+                  >
                     {userInitial}
-                </Avatar>
+                  </Avatar>
                 </IconButton>
               </Tooltip>
-              </Typography>
 
               <Menu
                 id="settings-menu"
@@ -183,17 +177,24 @@ const Navbar: React.FC = () => {
                     mt: 1.5,
                     minWidth: 160,
                     boxShadow: "rgba(0, 0, 0, 0.2) 0px 8px 24px",
-                    zIndex: 1301, // Garante que o menu fique sobreposto corretamente
+                    zIndex: 1301,
                   },
                 }}
-                 className="setting"
+                className="setting"
               >
                 <MenuItem onClick={handleEditProfile}>Editar Perfil</MenuItem>
                 <MenuItem onClick={handleLogout}>Sair</MenuItem>
               </Menu>
-            </div>
+            </Box>
           ) : (
-            <>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                gap: 1,
+                alignItems: "center",
+              }}
+            >
               <Button
                 color="inherit"
                 variant="outlined"
@@ -205,6 +206,7 @@ const Navbar: React.FC = () => {
                     backgroundColor: "rgba(255,255,255,0.15)",
                     borderColor: "#fff",
                   },
+                  width: isMobile ? "100%" : "auto",
                 }}
               >
                 Login
@@ -220,11 +222,12 @@ const Navbar: React.FC = () => {
                   "&:hover": {
                     bgcolor: "#ddd",
                   },
+                  width: isMobile ? "100%" : "auto",
                 }}
               >
                 Registrar
               </Button>
-            </>
+            </Box>
           )}
         </Box>
       </Toolbar>

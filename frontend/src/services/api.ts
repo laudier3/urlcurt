@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://www.urlcurt.site', //"https://app3.apinonshops.store/api", //'https://app3.apinonshops.store/api',
+  baseURL: 'https://urlcurt.site', //"https://app3.apinonshops.store/api", //'https://app3.apinonshops.store/api',
   withCredentials: true
 });
 

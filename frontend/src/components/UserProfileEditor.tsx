@@ -30,6 +30,7 @@ export const UserProfileEditor: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false); // ✅ novo estado
 
   const navigate = useNavigate();
 
@@ -87,16 +88,18 @@ export const UserProfileEditor: React.FC = () => {
     setDeleting(true);
     try {
       await api.delete("/api/me", { withCredentials: true });
-      navigate("/");
+
+      setDeleteSuccess(true); // ✅ mostra mensagem de sucesso
+      setConfirmDeleteOpen(false);
+
       setTimeout(() => {
+        navigate("/");
         window.location.reload()
-      }, 5000); // ou /login, dependendo da sua lógica
+      }, 5000); // ✅ redireciona após 5s
     } catch (err) {
-      //console.error("Erro ao excluir conta:", err);
       setError("Erro ao excluir conta.");
     } finally {
       setDeleting(false);
-      setConfirmDeleteOpen(false);
     }
   };
 
@@ -111,6 +114,11 @@ export const UserProfileEditor: React.FC = () => {
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {success && <Alert severity="success" sx={{ mb: 2 }}>Dados atualizados com sucesso!</Alert>}
+      {deleteSuccess && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          Sua conta foi excluída com sucesso! Redirecionando para a home...
+        </Alert>
+      )}
 
       <TextField
         label="Nome"

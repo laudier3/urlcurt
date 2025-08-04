@@ -22,12 +22,14 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false); // ✅ Novo estado
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess(false); // ✅ Limpa estado anterior
 
     if (!name || !email || !password || !confirmPassword || !phone || !age) {
       setError('Todos os campos são obrigatórios!');
@@ -51,12 +53,14 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
       });
 
       if (res.data.token) {
-        onRegister(res.data.token);
+        setSuccess(true); // ✅ Mostra mensagem
+        setTimeout(() => {
+          navigate('/login'); // ✅ Redireciona após 4 segundos
+        }, 5000);
       } else {
         setError('Erro ao registrar usuário.');
       }
     } catch (err: any) {
-      console.error('Erro:', err);
       if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
@@ -153,6 +157,12 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
 
       {error && <p style={styles.error}>{error}</p>}
 
+      {success && (
+        <p style={styles.success}>
+          Usuário criado com sucesso! Redirecionando para login...
+        </p>
+      )}
+
       <div style={styles.linkContainer}>
         <span style={{ marginRight: 6, color: '#777' }}>Já tem uma conta?</span>
         <button
@@ -221,6 +231,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   error: {
     color: 'red',
+    textAlign: 'center',
+    marginTop: '10px',
+    fontWeight: 500,
+  },
+  success: {
+    color: 'green',
     textAlign: 'center',
     marginTop: '10px',
     fontWeight: 500,

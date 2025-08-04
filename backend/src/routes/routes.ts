@@ -224,6 +224,34 @@ router.put('/api/me', authMiddleware, async (req: AuthRequest, res: any) => {
   }
 });
 
+// Deletar conta do usuário logado
+router.delete('/api/me', authMiddleware, async (req: AuthRequest, res: any) => {
+  const userId = req.userId!;
+
+  try {
+    // Verifica se o usuário existe
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+    // Deleta o usuário (URLs e Visits são deletadas automaticamente)
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      path: '/',
+    });
+
+    return res.json({ message: 'Conta e dados relacionados excluídos com sucesso' });
+  } catch (err) {
+    console.error('Erro ao deletar conta:', err);
+    return res.status(500).json({ error: 'Erro ao excluir conta' });
+  }
+});
+
 router.post('/api/recover-password', async (req: any, res: any) => {
   const { phone } = req.body;
   if (!phone) return res.status(400).json({ error: 'Telefone é obrigatório' });

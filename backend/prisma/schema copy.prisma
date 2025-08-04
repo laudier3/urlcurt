@@ -38,6 +38,7 @@ model Url {
   visits    Int      @default(0)
   createdAt DateTime @default(now())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
   visitLogs Visit[]
 }
+

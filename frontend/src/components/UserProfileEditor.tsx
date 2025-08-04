@@ -6,8 +6,12 @@ import {
   Button,
   CircularProgress,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 interface User {
@@ -24,8 +28,10 @@ export const UserProfileEditor: React.FC = () => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -74,6 +80,23 @@ export const UserProfileEditor: React.FC = () => {
       setError(err.response?.data?.error || "Erro ao atualizar usuário.");
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      await api.delete("/api/me", { withCredentials: true });
+      navigate("/");
+      setTimeout(() => {
+        window.location.reload()
+      }, 5000); // ou /login, dependendo da sua lógica
+    } catch (err) {
+      //console.error("Erro ao excluir conta:", err);
+      setError("Erro ao excluir conta.");
+    } finally {
+      setDeleting(false);
+      setConfirmDeleteOpen(false);
     }
   };
 
@@ -128,12 +151,49 @@ export const UserProfileEditor: React.FC = () => {
       >
         {updating ? "Salvando..." : "Salvar Alterações"}
       </Button>
-      <button
-        type="button"
-        onClick={() => navigate('/')}
+
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={() => setConfirmDeleteOpen(true)}
+        sx={{ mt: 2 }}
+        fullWidth
+      >
+        Excluir Conta
+      </Button>
+
+      <Button
+        variant="text"
+        onClick={() => navigate("/")}
+        sx={{ mt: 2 }}
+        fullWidth
       >
         Voltar para Home
-      </button>
+      </Button>
+
+      {/* Diálogo de Confirmação */}
+      <Dialog open={confirmDeleteOpen} onClose={() => setConfirmDeleteOpen(false)}>
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Tem certeza que deseja excluir sua conta? Todos os seus dados, URLs e estatísticas
+            serão apagados permanentemente.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDeleteOpen(false)} disabled={deleting}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleDeleteAccount}
+            color="error"
+            variant="contained"
+            disabled={deleting}
+          >
+            {deleting ? "Excluindo..." : "Confirmar Exclusão"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

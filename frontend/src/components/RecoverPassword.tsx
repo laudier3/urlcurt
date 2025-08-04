@@ -7,7 +7,7 @@ interface RecoverPasswordResponse {
 }
 
 export const RecoverPassword: React.FC = () => {
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -18,33 +18,30 @@ export const RecoverPassword: React.FC = () => {
     setLoading(true);
 
     try {
-        // 2. Tipar a resposta do Axios aqui:
-        const res = await api.post<RecoverPasswordResponse>('/api/recover-password', { phone });
-        
-        // 3. Agora o TypeScript entende que res.data.message existe
-        setStatus(res.data.message || 'Link enviado com sucesso');
+      const res = await api.post<RecoverPasswordResponse>('/api/recover-password', { email });
+      setStatus(res.data.message || 'Link de recuperação enviado com sucesso!');
     } catch (err: any) {
-        setStatus(err.response?.data?.error || 'Erro ao enviar link de recuperação');
+      setStatus(err.response?.data?.error || 'Erro ao enviar link de recuperação');
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-    };
+  };
 
   return (
     <form onSubmit={handleSubmit} className="container" style={styles.form}>
       <h2 style={styles.title}>Recuperar Senha</h2>
 
       <input
-        type="text"
-        placeholder="Digite seu telefone"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        type="email"
+        placeholder="Digite seu e-mail"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         required
         style={styles.input}
       />
 
       <button type="submit" disabled={loading} style={styles.button}>
-        {loading ? 'Enviando...' : 'Enviar link por SMS'}
+        {loading ? 'Enviando...' : 'Enviar link por e-mail'}
       </button>
 
       {status && <p style={{ marginTop: 12, color: '#555' }}>{status}</p>}
@@ -101,4 +98,3 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#007bff',
   },
 };
-

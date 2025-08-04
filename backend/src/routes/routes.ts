@@ -5,6 +5,7 @@ import { hashPassword, comparePassword, generateToken, verifyToken } from '../se
 import { authMiddleware, AuthRequest } from '../middleware/authMiddleware';
 import geoip from 'geoip-lite';
 import twilio from 'twilio';
+import nodemailer from 'nodemailer';
 
 const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
@@ -20,6 +21,15 @@ export async function sendSms(phone: string, message: string) {
         throw new Error('Erro ao enviar SMS');
     }
 }
+
+// Configuração do Nodemailer
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,       // Ex: seuemail@gmail.com
+    pass: process.env.EMAIL_PASSWORD,   // Senha ou App Password
+  },
+});
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -69,7 +79,7 @@ router.post('/api/register', async (req: any, res: any) => {
 });
 
 // Recuperação de senha via telefone
-router.post('/api/recover-password', async (req: any, res: any) => {
+/*router.post('/api/recover-password', async (req: any, res: any) => {
   const { phone } = req.body;
   if (!phone) return res.status(400).json({ error: 'Telefone é obrigatório' });
 
@@ -88,6 +98,39 @@ router.post('/api/recover-password', async (req: any, res: any) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao enviar link de recuperação' });
+  }
+});*/
+
+// Recuperação de senha via email
+router.post('/api/recover-password', async (req: any, res: any) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ error: 'E-mail é obrigatório' });
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado com esse e-mail' });
+
+    const resetToken = generateToken({ id: user.id, email: user.email });
+    const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+
+    // Envio do e-mail
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Recuperação de Senha',
+      html: `
+        <p>Olá, ${user.name}!</p>
+        <p>Clique no link abaixo para redefinir sua senha:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Se você não solicitou isso, ignore este e-mail.</p>
+      `,
+    });
+
+    res.json({ message: 'Link de recuperação enviado para o e-mail' });
+  } catch (err) {
+    console.error('Erro ao enviar e-mail de recuperação:', err);
+    res.status(500).json({ error: 'Erro ao enviar link de recuperação por e-mail' });
   }
 });
 

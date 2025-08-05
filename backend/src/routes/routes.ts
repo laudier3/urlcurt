@@ -296,24 +296,59 @@ router.delete('/api/me', authMiddleware, async (req: AuthRequest, res: any) => {
 });
 
 router.post('/api/recover-password', async (req: any, res: any) => {
-  const { phone } = req.body;
-  if (!phone) return res.status(400).json({ error: 'Telefone é obrigatório' });
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'E-mail é obrigatório' });
 
   try {
-    const user = await prisma.user.findUnique({ where: { phone } });
-    if (!user) return res.status(404).json({ error: 'Usuário não encontrado com esse telefone' });
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado com esse e-mail' });
 
-    // Usando a função generateToken para criar o token de recuperação
     const resetToken = generateToken({ id: user.id, email: user.email });
     const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
 
-    // Enviando o link de recuperação por SMS
-    await sendSms(phone, `Clique no link para redefinir sua senha: ${resetLink}`);
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Recuperação de Senha',
+      html: `
+        <p>Olá, ${user.name}!</p>
+        <p>Clique no link abaixo para redefinir sua senha:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Se você não solicitou isso, ignore este e-mail.</p>
+      `,
+    });
 
-    res.json({ message: 'Link de recuperação enviado por SMS' });
+    res.json({ message: 'Link de recuperação enviado para o e-mail' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao enviar link de recuperação' });
+    console.error('Erro ao enviar e-mail de recuperação:', err);
+    res.status(500).json({ error: 'Erro ao enviar link de recuperação por e-mail' });
+  }
+});
+
+router.post('/api/reset-password', async (req: any, res: any) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ error: 'Token e nova senha são obrigatórios' });
+  }
+
+  try {
+    // Verifica se o token é válido
+    const decoded: any = verifyToken(token); // retorna { id, email }
+
+    // Criptografa a nova senha
+    const hashed = await hashPassword(newPassword);
+
+    // Atualiza o usuário no banco
+    await prisma.user.update({
+      where: { id: decoded.id },
+      data: { password: hashed },
+    });
+
+    res.json({ message: 'Senha redefinida com sucesso!' });
+  } catch (err) {
+    console.error('Erro ao redefinir senha:', err);
+    return res.status(400).json({ error: 'Token inválido ou expirado' });
   }
 });
 

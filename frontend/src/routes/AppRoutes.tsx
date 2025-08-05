@@ -16,6 +16,7 @@ import Loading from "../components/Loading";
 import { RecoverPassword } from "../components/RecoverPassword";
 import { AuthProvider } from "../store/context";
 import { UserProfileEditor } from "../components/UserProfileEditor";
+import ProtectedResetPassword from "../components/ProtectedResetPassword";
 
 type Url = {
   id: number;
@@ -222,6 +223,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/politica" element={<Politica />} />
         <Route path="/recover-password" element={<RecoverPassword />} />
         <Route path="/edit-profile" element={<UserProfileEditor />} />
+        <Route path="/reset-password" element={<ProtectedResetPassword />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

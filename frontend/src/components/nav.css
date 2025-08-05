@@ -27,6 +27,14 @@
     color: #fff;
 }
 
+.logoPass {
+    font-weight: 700;
+    user-select: none;
+    color: #4F46E5;
+    padding: 10px;
+    text-align: center;
+}
+
 .avatar {
     width: 36;
     height: 36;

@@ -70,7 +70,7 @@ export const RecoverPassword: React.FC = () => {
         <div style={styles.modalOverlay}>
           <div style={styles.modal}>
             <h3>Link de recuperação enviado!</h3>
-            <p>Redirecionando para o login...</p>
+            <p>Agora confiraseu E-mail...</p>
             <div style={styles.spinner}></div>
           </div>
         </div>
@@ -138,6 +138,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: 'center',
     width: '300px',
     boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    color: "green"
   },
   spinner: {
     margin: '20px auto 0',

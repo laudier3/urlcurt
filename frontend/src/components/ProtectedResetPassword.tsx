@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, Navigate } from "react-router-dom";
-import * as jwtDecode from "jwt-decode";
+import { useSearchParams } from "react-router-dom";
+import * as jwt_decode from "jwt-decode";
+import { ResetPassword } from "./ResetPassword";
+import "./nav.css"
+import { Typography } from "@mui/material";
 
 interface TokenPayload {
   id: number;
@@ -11,42 +14,43 @@ interface TokenPayload {
 
 const ProtectedResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const [isValid, setIsValid] = useState<boolean | null>(null);
+  const [message, setMessage] = useState('Validando token...');
 
   useEffect(() => {
     const token = searchParams.get("token");
-
     if (!token) {
-      setIsValid(false);
+      setMessage('Token não encontrado na URL.');
       return;
     }
 
     try {
-      const decoded = (jwtDecode as any)(token) as TokenPayload;
+      const decoded = (jwt_decode as any)(token);
 
       if (!decoded.exp || Date.now() >= decoded.exp * 1000) {
-        setIsValid(false);
+        setMessage('Token expirado.');
       } else {
-        setIsValid(true);
+        setMessage(`Token válido para o usuário: ${decoded.email}`);
       }
-    } catch {
-      setIsValid(false);
+    } catch (e) {
+      setMessage('Token inválido.');
     }
   }, [searchParams]);
 
-  if (isValid === null) {
-    return <p>Validando token...</p>;
-  }
-
-  if (!isValid) {
-    return <Navigate to="/" replace />;
-  }
-
   return (
     <div>
-      {/* Aqui você pode renderizar seu componente ResetPassword com token válido */}
-      <h2>Redefinir senha</h2>
-      {/* Seu formulário de reset de senha */}
+      <Typography 
+        className="logoPass"
+        sx={{
+          cursor: "pointer",
+          fontWeight: "bold",
+          flexShrink: 0,
+        }}
+        style={{fontSize: 30}}
+      >
+        UrlCurt
+      </Typography>
+      <hr />
+      <ResetPassword/>
     </div>
   );
 };

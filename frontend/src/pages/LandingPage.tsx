@@ -7,6 +7,7 @@ import FeaturesSection2 from './FeaturesSection';
 import AboutSection from './AboutSection';
 import CallToAction from './CallToAction';
 import ArticlesSection from './ArticlesSection';
+import { FloatingShare } from '../components/FloatingShare'; 
 //import "./LoadingSpinner.css"
 
 
@@ -174,8 +175,21 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
       <Helmet>
         <title>Urlcurt - Encurtador de Links</title>
         <meta name="description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://seudominio.com/" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Urlcurt - Encurtador de Links" />
+        <meta property="og:description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
+        <meta property="og:image" content="https://www.urlcurt.com.br/images/share-image.png" />
+        <meta property="og:url" content="https://www.urlcurt.com.br" />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Urlcurt - Encurtador de Links" />
+        <meta name="twitter:description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
+        <meta name="twitter:image" content="https://www.urlcurt.com.br/images/share-image.png" />
+
+        <link rel="canonical" href="https://www.urlcurt.com.br/" />
       </Helmet>
       
       <canvas
@@ -228,7 +242,7 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
           )}
         </div>
       </nav>
-
+      <FloatingShare />
       <main className="hero">
         <h1>Encurte e Compartilhe URLs com Facilidade</h1>
         <p>

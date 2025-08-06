@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import ConsentFooter from './ConsentFooter';
 import FeaturesSection from './FeaturesSection';
 import FeaturesSection1 from './FeaturesSection1';
-import FeaturesSection2 from './FeaturesSection2';
+import FeaturesSection2 from './FeaturesSection';
 import AboutSection from './AboutSection';
 import CallToAction from './CallToAction';
 import ArticlesSection from './ArticlesSection';

@@ -13,18 +13,23 @@ import {
   Box,
   Alert,
 } from "@mui/material";
+
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { UrlListlist } from "../UrlListlist"; // seu componente de listagem
-import api from "../../services/api";
+
+import { UrlListlist } from "./UrlListlist";
+import api from "../services/api";
+
+// Importa seu Navbar aqui
+import Navbar from "./Navbar";
 
 interface UrlData {
   id: number;
   original: string;
   slug: string;
-  visits: number;    // ajustei para ter compatibilidade com o gráfico
-  createdAt: string; // idem
+  visits: number;
+  createdAt: string;
 }
 
 interface GetUrlsResponse {
@@ -52,17 +57,6 @@ export const UrlManager: React.FC = () => {
 
     fetchUrls();
   }, []);
-
-  const handleEdit = (id: number) => {
-    setEditingId(id);
-    const url = urls.find((u) => u.id === id);
-    if (url) {
-      setUpdatedUrls((prev) => ({
-        ...prev,
-        [id]: { ...url },
-      }));
-    }
-  };
 
   const handleChange = (id: number, field: keyof UrlData, value: string) => {
     setUpdatedUrls((prev) => ({
@@ -92,10 +86,21 @@ export const UrlManager: React.FC = () => {
     }
   };
 
+  const handleEdit = (id: number) => {
+    setEditingId(id);
+    const url = urls.find((u) => u.id === id);
+    if (url) {
+      setUpdatedUrls((prev) => ({
+        ...prev,
+        [id]: { ...url },
+      }));
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (!window.confirm("Tem certeza que deseja deletar essa URL?")) return;
     try {
-      await api.delete(`/urls/${id}`, { withCredentials: true });
+      await api.delete(`/api/urls/${id}`, { withCredentials: true });
       setUrls((prev) => prev.filter((u) => u.id !== id));
       if (editingId === id) setEditingId(null);
     } catch {
@@ -103,8 +108,13 @@ export const UrlManager: React.FC = () => {
     }
   };
 
+  // ... (seu código de edição, salvar, deletar etc)
+
   return (
     <>
+      {/* Coloca o Navbar aqui no topo */}
+      <Navbar />
+
       {/* Passa as urls para o componente de listagem */}
       <UrlListlist urls={urls} />
 

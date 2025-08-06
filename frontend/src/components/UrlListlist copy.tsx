@@ -86,116 +86,8 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
                 <strong>Encurtada:</strong>{' '}
                 <a href={shortUrl} target="_blank" rel="noopener noreferrer">
                   {shortUrl}
-                </a>
-              </div>
-
-              {/* Botões de compartilhamento e copiar */}
-              <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
-                {/* Facebook */}
-                <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}&display=popup`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#1877F2',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  Facebook
-                </a>
-
-                {/* Twitter */}
-                <a
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=${encodeURIComponent(url.original)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#1DA1F2',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  Twitter
-                </a>
-
-                {/* LinkedIn */}
-                <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#0077B5',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  LinkedIn
-                </a>
-
-                {/* WhatsApp */}
-                <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shortUrl)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#25D366',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  WhatsApp
-                </a>
-
-                {/* Telegram */}
-                <a
-                  href={`https://t.me/share/url?url=${encodeURIComponent(shortUrl)}&text=${encodeURIComponent(url.original)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#0088cc',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  Telegram
-                </a>
-
-                {/* Instagram - abre perfil (não tem share direto) */}
-                <a
-                  href="https://www.instagram.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#C13584',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                  title="Instagram não tem compartilhamento direto para links"
-                >
-                  Instagram
-                </a>
-              </div>
-              <br />
-              <button
+                </a>{' '}
+                <button
                   onClick={() => handleCopy(url.id, shortUrl)}
                   style={{
                     marginLeft: 10,
@@ -209,9 +101,9 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
                   }}
                 >
                   {copiedUrlId === url.id ? 'Copiado!' : 'Copiar'}
-              </button>
-              <br />
-              <br />
+                </button>
+              </div>
+
               <div className="textos">
                 <strong>Original:</strong>{' '}
                 <a href={url.original} target="_blank" rel="noopener noreferrer">

@@ -7,7 +7,7 @@ export const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
 
   const [token, setToken] = useState('');
-  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ export const ResetPassword: React.FC = () => {
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (newPassword !== confirmPassword) {
       setStatus('As senhas não coincidem.');
       return;
     }
@@ -35,7 +35,11 @@ export const ResetPassword: React.FC = () => {
     setLoading(true);
 
     try {
-      await api.post('/api/reset-password', { token, password });
+      await api.post('/api/reset-password', {
+        token,
+        newPassword, // ✅ nome correto aqui
+      });
+
       setStatus('Senha redefinida com sucesso! Você será redirecionado para o login.');
       setTimeout(() => navigate('/login'), 3000);
     } catch (error: any) {
@@ -52,11 +56,11 @@ export const ResetPassword: React.FC = () => {
       <input
         type="password"
         placeholder="Nova senha"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
+        value={newPassword}
+        onChange={e => setNewPassword(e.target.value)}
         required
         style={inputStyle}
-        minLength={6} // opcional, por segurança
+        minLength={6}
       />
 
       <input

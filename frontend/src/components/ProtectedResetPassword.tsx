@@ -5,16 +5,17 @@ import { ResetPassword } from "./ResetPassword";
 import "./nav.css"
 import { Typography } from "@mui/material";
 
-interface TokenPayload {
+/*interface TokenPayload {
   id: number;
   email: string;
   exp: number;
   iat: number;
-}
+}*/
 
 const ProtectedResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [message, setMessage] = useState('Validando token...');
+  console.info(message)
 
   useEffect(() => {
     const token = searchParams.get("token");

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
 import './LoadingSpinner.css';
 import { useNavigate } from 'react-router-dom';
-import Loading from '../components/Loading';
+//import Loading from '../components/Loading';
 
 interface ContactPageData {
   name: string;

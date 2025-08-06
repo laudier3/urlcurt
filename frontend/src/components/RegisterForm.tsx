@@ -43,14 +43,21 @@ const RegisterForm: React.FC<Props> = ({ onRegister }) => {
 
     try {
       setLoading(true);
-      const res = await api.post<RegisterResponse>('/api/register', {
-        name,
-        email,
-        password,
-        phone,
-        age,
-        withCredentials: true,
-      });
+      const res = await api.post<RegisterResponse>(
+        '/api/register',
+        {
+          name,
+          email,
+          password,
+          phone,
+          age,
+        },
+        {
+          withCredentials: true, // Mover para o terceiro argumento
+        }
+      );
+
+      console.log('API response:', res.data);
 
       if (res.data.token) {
         setSuccess(true); // ✅ Mostra mensagem

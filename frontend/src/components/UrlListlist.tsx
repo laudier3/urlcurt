@@ -177,7 +177,7 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
                 </a>
 
                 {/* Instagram - abre perfil (não tem share direto) */}
-                <a
+                {/*<a
                   href="https://www.instagram.com/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -192,7 +192,7 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
                   title="Instagram não tem compartilhamento direto para links"
                 >
                   Instagram
-                </a>
+                </a>*/}
               </div>
               <br />
               <button

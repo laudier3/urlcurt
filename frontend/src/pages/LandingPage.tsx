@@ -203,15 +203,6 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
         }}
       />
 
-      {/*<nav className="navbar" role="navigation" aria-label="Navegação principal">
-        <div className="logo">Urlcurt</div>
-        <div className="nav-links">
-          <button onClick={onSobreClick} className="btn btn-login">Sobre</button>
-          <button onClick={onContatoClick} className="btn btn-login">Contato</button>
-          <button onClick={onLoginClick} className="btn btn-login">Login</button>
-          <button onClick={onRegisterClick} className="btn btn-register">Registrar</button>
-        </div>
-      </nav>*/}
       <nav className="navbar" role="navigation" aria-label="Navegação principal">
         <div className="logo">Urlcurt</div>
         <div className="nav-links">
@@ -250,6 +241,7 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
           Aqui você também pode personalizar suas URLs, editá-las, acompanhar o tráfego detalhado que suas URLs personalizadas recebem, 
           incluindo as regiões de onde estão sendo mais acessadas, tudo isso com total segurança e controle.
         </p>
+        
         <div className="hero-buttons">
           <button onClick={onRegisterClick} className="btn btn-primary">Comece Agora</button>
           <button onClick={onLoginClick} className="btn btn-secondary">Já Tenho Conta</button>

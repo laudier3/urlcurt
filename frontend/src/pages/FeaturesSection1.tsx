@@ -1,6 +1,25 @@
 import React from 'react';
 
 const FeaturesSection1: React.FC = () => {
+
+  /*useEffect(() => {
+    const d = document;
+    const s = d.createElement('script');
+    const l = d.scripts[d.scripts.length - 1];
+
+    (s as any).settings = {};
+    s.src = "//probableregret.com/bwXOV.stdhGEl-0GYbWBch/teZmk9AuQZLUblpkOPlTkYr1kNsjuk/0zN/jGcbtYNYj/Uf2MOmThQV2MOgAC";
+    s.async = true;
+    s.referrerPolicy = 'no-referrer-when-downgrade';
+
+    l.parentNode?.insertBefore(s, l);
+
+    return () => {
+      s.remove();
+    };
+  }, []);*/
+
+
   return (
     <section className="features-section">
       {/*<h2>Por que escolher o Urlcurt para suas URLs?</h2>*/}

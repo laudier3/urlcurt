@@ -1,6 +1,7 @@
 import React from 'react';
 
 const CallToAction: React.FC<{ onRegisterClick: () => void }> = ({ onRegisterClick }) => {
+  
   return (
     <section className="cta-section">
       <h2>Pronto para transformar seus links?</h2>

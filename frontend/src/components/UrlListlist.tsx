@@ -1,39 +1,12 @@
 import React, { useState } from "react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  Brush,
-} from "recharts";
+import ReactApexChart from "react-apexcharts";
+import type { ApexOptions } from "apexcharts";
 import api from "../services/api";
 import { GeoLocationStats } from "./GeoLocationStats";
 
 type Url = { id: number; original: string; slug: string; visits: number; createdAt: string };
 type TrafficEntry = { date: string; count: number };
 type Props = { urls: Url[] };
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div style={{
-        backgroundColor: "#fff",
-        border: "1px solid #ccc",
-        padding: "8px 12px",
-        borderRadius: 8,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        fontSize: 14,
-      }}>
-        <div><strong>{new Date(label).toLocaleDateString("pt-BR")}</strong></div>
-        <div>Visitas: {payload[0].value}</div>
-      </div>
-    );
-  }
-  return null;
-};
 
 export const UrlListlist: React.FC<Props> = ({ urls }) => {
   const [expandedUrlId, setExpandedUrlId] = useState<number | null>(null);
@@ -54,10 +27,84 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
       setTrafficData((prev) => ({ ...prev, [urlId]: res.data }));
       setExpandedUrlId(urlId);
     } catch (err) {
-      console.error("Erro fetching traffic", err);
+      console.error("Erro ao buscar dados de tráfego", err);
     } finally {
       setLoadingTraffic(null);
     }
+  };
+
+   // ✅ Esta função deve estar DENTRO do componente e ANTES do return
+  const buildChartOptions = (data: TrafficEntry[]) => {
+    const options: ApexOptions = {
+      chart: {
+        type: "area",
+        height: 260,
+        zoom: { enabled: false },
+        toolbar: { show: false },
+        animations: {
+          enabled: true,
+          // easing: "easeinout", // <<< REMOVA ESSA LINHA
+          speed: 800,
+          animateGradually: { enabled: true, delay: 150 },
+          dynamicAnimation: { enabled: true, speed: 350 },
+        }
+
+      },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth", width: 3, colors: ["#6366f1"] },
+      xaxis: {
+        type: "datetime",
+        labels: {
+          rotate: -45,
+          style: { fontSize: "12px", colors: "#9ca3af" },
+          datetimeFormatter: {
+            day: "dd/MM",
+            month: "MM/yyyy",
+          },
+        },
+      },
+      yaxis: {
+        labels: { style: { fontSize: "12px", colors: "#9ca3af" } },
+      },
+      tooltip: {
+        theme: "light",
+        x: { format: "dd/MM/yyyy" },
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shade: "light",
+          type: "vertical",
+          shadeIntensity: 0.3,
+          gradientToColors: ["#818cf8"],
+          opacityFrom: 0.6,
+          opacityTo: 0.05,
+          stops: [0, 90, 100],
+        },
+      },
+      markers: {
+        size: 4,
+        colors: ["#6366f1"],
+        strokeColors: "#fff", // <-- corrigido aqui
+        strokeWidth: 2,
+        hover: { size: 6 },
+      },
+      grid: {
+        borderColor: "#e5e7eb",
+        strokeDashArray: 4,
+      },
+      colors: ["#6366f1"],
+    };
+
+    const series = [{
+      name: "Visitas",
+      data: data.map((entry) => ({
+        x: new Date(entry.date).getTime(),
+        y: entry.count,
+      })),
+    }];
+
+    return { options, series };
   };
 
   if (urls.length === 0) return <p>Você ainda não criou nenhuma URL.</p>;
@@ -89,143 +136,40 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
                 </a>
               </div>
 
-              {/* Botões de compartilhamento e copiar */}
-              <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
-                {/* Facebook */}
-                <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}&display=popup`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#1877F2',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  Facebook
-                </a>
-
-                {/* Twitter */}
-                <a
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=${encodeURIComponent(url.original)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#1DA1F2',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  Twitter
-                </a>
-
-                {/* LinkedIn */}
-                <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#0077B5',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  LinkedIn
-                </a>
-
-                {/* WhatsApp */}
-                <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shortUrl)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#25D366',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  WhatsApp
-                </a>
-
-                {/* Telegram */}
-                <a
-                  href={`https://t.me/share/url?url=${encodeURIComponent(shortUrl)}&text=${encodeURIComponent(url.original)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#0088cc',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                >
-                  Telegram
-                </a>
-
-                {/* Instagram - abre perfil (não tem share direto) */}
-                {/*<a
-                  href="https://www.instagram.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    textDecoration: 'none',
-                    fontSize: 12,
-                    background: '#C13584',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: 4,
-                  }}
-                  title="Instagram não tem compartilhamento direto para links"
-                >
-                  Instagram
-                </a>*/}
+              <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}`} target="_blank" rel="noopener noreferrer" style={{ background: '#1877F2', color: 'white', padding: '4px 8px', borderRadius: 4, fontSize: 12 }}>Facebook</a>
+                <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=${encodeURIComponent(url.original)}`} target="_blank" rel="noopener noreferrer" style={{ background: '#1DA1F2', color: 'white', padding: '4px 8px', borderRadius: 4, fontSize: 12 }}>Twitter</a>
+                <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`} target="_blank" rel="noopener noreferrer" style={{ background: '#0077B5', color: 'white', padding: '4px 8px', borderRadius: 4, fontSize: 12 }}>LinkedIn</a>
+                <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shortUrl)}`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: 'white', padding: '4px 8px', borderRadius: 4, fontSize: 12 }}>WhatsApp</a>
+                <a href={`https://t.me/share/url?url=${encodeURIComponent(shortUrl)}&text=${encodeURIComponent(url.original)}`} target="_blank" rel="noopener noreferrer" style={{ background: '#0088cc', color: 'white', padding: '4px 8px', borderRadius: 4, fontSize: 12 }}>Telegram</a>
               </div>
+
               <br />
+
               <button
-                  onClick={() => handleCopy(url.id, shortUrl)}
-                  style={{
-                    marginLeft: 10,
-                    padding: '2px 6px',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer',
-                    backgroundColor: copiedUrlId === url.id ? '#10b981' : '#e5e7eb',
-                    color: copiedUrlId === url.id ? 'white' : 'black',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                  }}
-                >
-                  {copiedUrlId === url.id ? 'Copiado!' : 'Copiar'}
+                onClick={() => handleCopy(url.id, shortUrl)}
+                style={{
+                  marginLeft: 10,
+                  padding: '2px 6px',
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  backgroundColor: copiedUrlId === url.id ? '#10b981' : '#e5e7eb',
+                  color: copiedUrlId === url.id ? 'white' : 'black',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                }}
+              >
+                {copiedUrlId === url.id ? 'Copiado!' : 'Copiar'}
               </button>
-              <br />
-              <br />
-              <div className="textos">
-                <strong>Original:</strong>{' '}
-                <a href={url.original} target="_blank" rel="noopener noreferrer">
-                  {url.original}
-                </a>
+
+              <br /><br />
+
+              <div><strong>Original:</strong>{' '}
+                <a href={url.original} target="_blank" rel="noopener noreferrer">{url.original}</a>
               </div>
 
-              <div>
-                <strong>Visitas totais:</strong> {url.visits}
-              </div>
-
-              <div>
-                <strong>Criada em:</strong> {new Date(url.createdAt).toLocaleString()}
-              </div>
+              <div><strong>Visitas totais:</strong> {url.visits}</div>
+              <div><strong>Criada em:</strong> {new Date(url.createdAt).toLocaleString()}</div>
 
               <button
                 style={{
@@ -253,42 +197,14 @@ export const UrlListlist: React.FC<Props> = ({ urls }) => {
               {isExpanded && history && (
                 <div style={{ marginTop: "1rem", backgroundColor: "#f4f4f4", padding: 10, borderRadius: 6 }}>
                   <h4>Tráfego nos últimos dias</h4>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <AreaChart data={history} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="10%" stopColor="#4f46e5" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="5 5" stroke="#e0e0e0" />
-                      <XAxis
-                        dataKey="date"
-                        tickFormatter={(date) => new Date(date).toLocaleDateString("pt-BR", {
-                          day: "2-digit", month: "2-digit",
-                        })}
-                        tick={{ fill: "#666", fontSize: 12 }}
-                        axisLine={false} tickLine={false}
-                      />
-                      <YAxis
-                        allowDecimals={false}
-                        tick={{ fill: "#666", fontSize: 12 }}
-                        axisLine={false} tickLine={false}
-                        width={40}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Area
-                        type="monotone"
-                        dataKey="count"
-                        stroke="#4f46e5"
-                        fill="url(#colorVisits)"
-                        strokeWidth={2.5}
-                        dot={{ r: 3, stroke: "#4f46e5", strokeWidth: 1, fill: "#fff" }}
-                        activeDot={{ r: 6, stroke: "#4f46e5", strokeWidth: 2, fill: "#fff" }}
-                      />
-                      <Brush dataKey="date" height={30} stroke="#8884d8" />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  <div style={{ overflowX: "auto" }}>
+                    <ReactApexChart
+                      options={buildChartOptions(history)}
+                      series={buildChartOptions(history).series}
+                      type="area"
+                      height={260}
+                    />
+                  </div>
                   <GeoLocationStats urlId={url.id} />
                 </div>
               )}

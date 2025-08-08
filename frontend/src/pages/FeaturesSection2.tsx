@@ -1,6 +1,7 @@
 import React from 'react';
 
 const FeaturesSection2: React.FC = () => {
+  
   return (
     <section className="features-section">
      {/*<h2>Por que escolher o Urlcurt para suas URLs?</h2>*/}

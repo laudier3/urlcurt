@@ -96,6 +96,7 @@ const articlesMock = [
 const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreClick, onContatoClick }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Handler exemplo para login — você pode trocar para integração real
   const handleLogin = () => {
@@ -205,7 +206,16 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
 
       <nav className="navbar" role="navigation" aria-label="Navegação principal">
         <div className="logo">Urlcurt</div>
-        <div className="nav-links">
+        <button
+          className="hamburger"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Abrir menu"
+          aria-expanded={isMenuOpen}
+        >
+          ☰
+        </button>
+
+        <div className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
           {!isLoggedIn ? (
             <>
               <button onClick={onSobreClick} className="btn btn-login">Sobre</button>
@@ -215,16 +225,8 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
             </>
           ) : (
             <>
-              {/* Ícones ou botões para usuário logado */}
               <button className="btn btn-user" title="Perfil">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  fill="#8b5cf6"
-                  aria-hidden="true"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#8b5cf6" aria-hidden="true">
                   <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zM12 14.4c-3.6 0-10.8 1.8-10.8 5.4v2.4h21.6v-2.4c0-3.6-7.2-5.4-10.8-5.4z" />
                 </svg>
               </button>

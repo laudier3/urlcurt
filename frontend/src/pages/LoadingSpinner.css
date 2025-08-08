@@ -191,3 +191,43 @@
     transform: rotate(360deg);
   }
 }
+
+.hamburger {
+  display: none;
+  font-size: 1.8rem;
+  background: transparent;
+  border: none;
+  color: #8b5cf6;
+  cursor: pointer;
+  z-index: 11;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    margin-left: 60%;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 32, 39, 0.95);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    transition: all 0.3s ease;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .btn {
+    width: 90%;
+    max-width: 250px;
+  }
+}

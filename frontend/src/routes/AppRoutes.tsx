@@ -17,6 +17,7 @@ import { RecoverPassword } from "../components/RecoverPassword";
 import { AuthProvider } from "../store/context";
 import { UserProfileEditor } from "../components/UserProfileEditor";
 import ProtectedResetPassword from "../components/ProtectedResetPassword";
+import SearchIcon from '@mui/icons-material/Search';
 
 type Url = {
   id: number;
@@ -35,6 +36,7 @@ const AppRoutes: React.FC = () => {
   const [urls, setUrls] = useState<Url[]>([]);
   const [loadingApp, setLoadingApp] = useState(true);
   const [loadingManager, setLoadingManager] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
 
@@ -141,8 +143,38 @@ const AppRoutes: React.FC = () => {
                       justifyContent: "space-between",
                       marginBottom: "20px",
                     }}
-                    >
-                    <h1>Encurtador de URL</h1>
+                  >
+                    <div style={{ flex: 1 }}>
+                      <h1>Encurtador de URL</h1>
+                      <input
+                        type="text"
+                        placeholder="Buscar URLs encurtadas..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "8px 36px 8px 12px",
+                          borderRadius: "20px",
+                          border: "1.5px solid #999",
+                          outline: "none",
+                          fontSize: "14px",
+                          transition: "border-color 0.3s",
+                        }}
+                        onFocus={(e) => (e.currentTarget.style.borderColor = "#4F46E5")}
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "#999")}
+                      />
+                      <SearchIcon
+                        style={{
+                          position: "absolute",
+                          right: 12,
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          color: "#666",
+                          pointerEvents: "none",
+                          fontSize: 18,
+                        }}
+                      />
+                    </div>
                     <div style={{ width: 300 }}>
                       <button
                         onClick={() => navigate("/manager")}
@@ -151,33 +183,23 @@ const AppRoutes: React.FC = () => {
                           display: "inline-block",
                           width: "65%",
                         }}
-                        >
+                      >
                         Gerenciar URLs
                       </button>
-                      {/*<button
-                        onClick={async () => {
-                          await logout();
-                          navigate("/");
-                        }}
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          display: "inline-block",
-                          width: "30%",
-                        }}
-                        >
-                        Sair
-                      </button>*/}
                     </div>
                   </div>
 
                   <UrlForm onNewUrl={handleNewUrl} />
-                  <UrlList urls={urls} />
+                  <UrlList
+                    urls={urls.filter((url) =>
+                      url.slug.toLowerCase().includes(searchTerm.toLowerCase())
+                    )}
+                  />
                 </div>
               )}
             </ProtectedRoute>
           }
-          />
+        />
 
         <Route
           path="/manager"
@@ -192,9 +214,42 @@ const AppRoutes: React.FC = () => {
                       display: "flex",
                       justifyContent: "space-between",
                       marginBottom: "20px",
+                      alignItems: "center",
                     }}
-                    >
-                    <h1>Gerenciador de URLs</h1>
+                  >
+                  <div >
+                    <h1 style={{ display: "inline-block", marginLeft: "10px" }}>
+                      Gerenciador de URLs
+                    </h1>
+                    <input
+                      type="text"
+                      placeholder="Buscar URLs encurtadas..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "8px 36px 8px 12px",
+                        borderRadius: "20px",
+                        border: "1.5px solid #999",
+                        outline: "none",
+                        fontSize: "14px",
+                        transition: "border-color 0.3s",
+                      }}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = "#4F46E5")}
+                      onBlur={(e) => (e.currentTarget.style.borderColor = "#999")}
+                    />
+                    <SearchIcon
+                      style={{
+                        position: "absolute",
+                        right: 12,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        color: "#666",
+                        pointerEvents: "none",
+                        fontSize: 18,
+                      }}
+                    />
+                    </div>
                     <button
                       onClick={() => navigate("/app")}
                       style={{
@@ -207,16 +262,17 @@ const AppRoutes: React.FC = () => {
                         height: "35px",
                         width: "100px",
                       }}
-                      >
+                    >
                       Voltar
                     </button>
                   </div>
-                  <UrlManager />
+
+                  <UrlManager search={searchTerm} />
                 </div>
               )}
             </ProtectedRoute>
           }
-          />
+        />
 
         <Route path="/sobre" element={<SobrePage />} />
         <Route path="/contato" element={<ContatoPage />} />

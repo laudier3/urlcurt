@@ -62,15 +62,6 @@ export const UrlManager: React.FC<Props> = ({ search }) => {
     fetchUrls();
   }, []);
 
-  // Aqui eu adiciono o filtro que respeita a prop 'search' sem alterar nada do resto
-  const filteredUrls = urls.filter((url) => {
-    const term = search.toLowerCase();
-    return (
-      url.original.toLowerCase().includes(term) ||
-      url.slug.toLowerCase().includes(term)
-    );
-  });
-
   const handleChange = (id: number, field: keyof UrlData, value: string) => {
     setUpdatedUrls((prev) => ({
       ...prev,
@@ -121,12 +112,15 @@ export const UrlManager: React.FC<Props> = ({ search }) => {
     }
   };
 
+  // ... (seu código de edição, salvar, deletar etc)
+
   return (
     <>
+      {/* Coloca o Navbar aqui no topo */}
       <Navbar />
 
-      {/* Passa as urls filtradas para o componente de listagem */}
-      <UrlListlist urls={filteredUrls} />
+      {/* Passa as urls para o componente de listagem */}
+      <UrlListlist urls={urls} />
 
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Typography variant="h5" gutterBottom>
@@ -139,7 +133,7 @@ export const UrlManager: React.FC<Props> = ({ search }) => {
           <Box display="flex" justifyContent="center" mt={4}>
             <CircularProgress />
           </Box>
-        ) : filteredUrls.length === 0 ? (
+        ) : urls.length === 0 ? (
           <Typography>Nenhuma URL encontrada.</Typography>
         ) : (
           <Table>
@@ -151,7 +145,7 @@ export const UrlManager: React.FC<Props> = ({ search }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUrls.map((url) => (
+              {urls.map((url) => (
                 <TableRow key={url.id}>
                   <TableCell className="texto">
                     {editingId === url.id ? (
@@ -170,7 +164,7 @@ export const UrlManager: React.FC<Props> = ({ search }) => {
                   <TableCell>
                     {editingId === url.id ? (
                       <TextField
-                        style={{ width: 80 }}
+                        style={{width: 80}}
                         value={updatedUrls[url.id]?.slug || ""}
                         onChange={(e) =>
                           handleChange(url.id, "slug", e.target.value)
@@ -205,4 +199,3 @@ export const UrlManager: React.FC<Props> = ({ search }) => {
     </>
   );
 };
-

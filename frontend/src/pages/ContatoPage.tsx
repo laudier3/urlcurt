@@ -3,6 +3,8 @@ import emailjs from 'emailjs-com';
 import './LoadingSpinner.css';
 import { useNavigate } from 'react-router-dom';
 //import Loading from '../components/Loading';
+import { useRef } from 'react';
+import { Helmet } from 'react-helmet';
 
 interface ContactPageData {
   name: string;
@@ -14,6 +16,7 @@ const ContactPage: React.FC = () => {
   const service_email = process.env.REACT_APP_YOUR_SERVICE_ID!;
   const templete_email = process.env.REACT_APP_YOUR_TEMPLATE_ID!;
   const user_email = process.env.REACT_APP_YOUR_USER_ID!;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const navigate = useNavigate();
 
@@ -77,74 +80,105 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="containerContato">
-      {isLoading && (
-        <div className="loading-overlay">
-          <div className="loading-spinner"></div>
-          <p className="loading-text">Enviando sua mensagem...</p>
-        </div>
-      )}
+    <>
+      <Helmet>
+        <title>encurtador de link | UrlCurt</title>
+        <meta name="description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
 
-      {showSuccessModal && (
-        <div style={modalOverlayStyle}>
-          <div style={modalStyle}>
-            <h3 style={{ marginBottom: '10px' }}>Mensagem enviada com sucesso!</h3>
-            <p>Entraremos em contato em breve.</p>
-            <button onClick={() => setShowSuccessModal(false)} style={closeButtonStyle}>
-              OK
-            </button>
+        {/* Open Graph */}
+        <meta property="og:title" content="Encurtador de URL | UrlCurt" />
+        <meta property="og:description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
+        <meta property="og:image" content="https://www.urlcurt.com.br/images/share-image.png" />
+        <meta property="og:url" content="https://www.urlcurt.com.br" />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Encurtador de Link | UrlCurt" />
+        <meta name="twitter:description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
+        <meta name="twitter:image" content="https://www.urlcurt.com.br/images/share-image.png" />
+
+        <link rel="canonical" href="https://www.urlcurt.com.br/" />
+      </Helmet>
+      <canvas
+        ref={canvasRef}
+        className="background"
+        style={{
+          position: 'fixed',
+          top: 0, left: 0, width: '100%', height: '100%',
+          zIndex: -1,
+          display: 'block',
+        }}
+      />
+      <div className="containerContato">
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Enviando sua mensagem...</p>
           </div>
-        </div>
-      )}
+        )}
 
-      <h2>Fale Conosco</h2>
+        {showSuccessModal && (
+          <div style={modalOverlayStyle}>
+            <div style={modalStyle}>
+              <h3 style={{ marginBottom: '10px' }}>Mensagem enviada com sucesso!</h3>
+              <p>Entraremos em contato em breve.</p>
+              <button onClick={() => setShowSuccessModal(false)} style={closeButtonStyle}>
+                OK
+              </button>
+            </div>
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nome:</label><br />
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
-        </div>
-        <div>
-          <label>E-mail:</label><br />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
-        </div>
-        <div>
-          <br />
-          <label>Mensagem:</label><br />
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            disabled={isLoading}
-            style={{
-              width: '100%',
-              height: 100,
-              padding: 10,
-              borderRadius: 5,
-              marginTop: 5,
-            }}
-          ></textarea>
-        </div>
+        <h2>Fale Conosco</h2>
 
-        <button type="submit" disabled={isLoading}>
-          Enviar
-        </button>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Nome:</label><br />
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              disabled={isLoading}
+              />
+          </div>
+          <div>
+            <label>E-mail:</label><br />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              disabled={isLoading}
+              />
+          </div>
+          <div>
+            <br />
+            <label>Mensagem:</label><br />
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              disabled={isLoading}
+              style={{
+                width: '100%',
+                height: 100,
+                padding: 10,
+                borderRadius: 5,
+                marginTop: 5,
+              }}
+              ></textarea>
+          </div>
 
-        {status && <p style={{ color: 'red' }}>{status}</p>}
-      </form>
-    </div>
+          <button type="submit" disabled={isLoading}>
+            Enviar
+          </button>
+
+          {status && <p style={{ color: 'red' }}>{status}</p>}
+        </form>
+      </div>
+    </>
   );
 };
 

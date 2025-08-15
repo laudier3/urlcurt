@@ -7,7 +7,7 @@ export const Politica= () => {
 
     return (
         <>
-        <Helmet>
+            <Helmet>
                 <title>encurtador de link | UrlCurt</title>
                 <meta name="description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
         
@@ -25,17 +25,17 @@ export const Politica= () => {
                 <meta name="twitter:image" content="https://www.urlcurt.com.br/images/share-image.png" />
         
                 <link rel="canonical" href="https://www.urlcurt.com.br/" />
-              </Helmet>
-              <canvas
+                </Helmet>
+                <canvas
                 ref={canvasRef}
                 className="background"
                 style={{
-                  position: 'fixed',
-                  top: 0, left: 0, width: '100%', height: '100%',
-                  zIndex: -1,
-                  display: 'block',
+                    position: 'fixed',
+                    top: 0, left: 0, width: '100%', height: '100%',
+                    zIndex: -1,
+                    display: 'block',
                 }}
-              />
+            />
             <h1 style={{
                 margin: "auto",
                 marginTop: 30,
@@ -51,23 +51,23 @@ export const Politica= () => {
                 }}>
                 <p>
                     A sua privacidade é importante para nós. É política do urlcurt respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar no site urlcurt, e outros sites que possuímos e operamos.
-                 </p>
-                 <p>
+                </p>
+                <p>
                     Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.
-                 </p>
-                 <p>
+                </p>
+                <p>
                     Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos dentro de meios comercialmente aceitáveis ​​para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados.
-                 </p>
-                 <p>
+                </p>
+                <p>
                     Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.
-                 </p>
-                 <p>
+                </p>
+                <p>
                     O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e práticas desses sites e não podemos aceitar responsabilidade por suas respectivas políticas de privacidade.
-                 </p>
-                 <p>
+                </p>
+                <p>
                     Você é livre para recusar a nossa solicitação de informações pessoais, entendendo que talvez não possamos fornecer alguns dos serviços desejados.
-                 </p>
-                 <p>
+                </p>
+                <p>
                     O uso continuado de nosso site será considerado como aceitação de nossas práticas em torno de privacidade e informações pessoais. Se você tiver alguma dúvida sobre como lidamos com dados do usuário e informações pessoais, entre em contacto connosco.
 
                 </p>
@@ -87,7 +87,7 @@ export const Politica= () => {
                     A) Não se envolver em atividades que sejam ilegais ou contrárias à boa fé a à ordem pública;
                 </p>
                 <p>
-                     B) Não difundir propaganda ou conteúdo de natureza racista, xenofóbica, jogos de sorte ou azar, qualquer tipo de pornografia ilegal, de apologia ao terrorismo ou contra os direitos humanos;
+                    B) Não difundir propaganda ou conteúdo de natureza racista, xenofóbica, jogos de sorte ou azar, qualquer tipo de pornografia ilegal, de apologia ao terrorismo ou contra os direitos humanos;
                     
                 </p>
                 <p>
@@ -99,7 +99,7 @@ export const Politica= () => {
                     Esta política é efetiva a partir de 27 July 2025 01:50
                 </span>
             </div>
-                <br />
+            <br />
         </>
     )
 };

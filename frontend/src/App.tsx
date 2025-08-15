@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import { useRef } from 'react';
 import { Helmet } from 'react-helmet';
+import { HashRouter } from "react-router-dom";
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,7 +25,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <HashRouter>
       <Helmet>
           <title>encurtador de link | UrlCurt</title>
           <meta name="description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
@@ -57,7 +58,7 @@ const App: React.FC = () => {
       <Router>
         <AppRoutes />
       </Router>
-    </>
+    </HashRouter>
   );
 };
 

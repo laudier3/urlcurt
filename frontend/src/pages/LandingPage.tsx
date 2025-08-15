@@ -170,15 +170,20 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
+  /*
+  "encurtador de link", "encurtador de URL", 
+  "Bitly", "TinyURL", "encurtar link grátis" e 
+  "como encurtar URL". 
+  */
 
   return (
     <>
       <Helmet>
-        <title>Urlcurt - Encurtador de Links</title>
+        <title>encurtador de link | UrlCurt</title>
         <meta name="description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
 
         {/* Open Graph */}
-        <meta property="og:title" content="Urlcurt - Encurtador de Links" />
+        <meta property="og:title" content="Encurtador de URL | UrlCurt" />
         <meta property="og:description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
         <meta property="og:image" content="https://www.urlcurt.com.br/images/share-image.png" />
         <meta property="og:url" content="https://www.urlcurt.com.br" />
@@ -186,12 +191,16 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Urlcurt - Encurtador de Links" />
+        <meta name="twitter:title" content="Encurtador de Link | UrlCurt" />
         <meta name="twitter:description" content="Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real." />
         <meta name="twitter:image" content="https://www.urlcurt.com.br/images/share-image.png" />
 
         <link rel="canonical" href="https://www.urlcurt.com.br/" />
       </Helmet>
+      <main>
+        <h1>como encurtar URL</h1>
+        <p>Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real.</p>
+      </main>
       
       <canvas
         ref={canvasRef}

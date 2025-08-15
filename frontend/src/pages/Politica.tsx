@@ -11,7 +11,7 @@ export const Politica= () => {
                 Política Privacidade
             </h1>
             <div style={{
-                width: "40%", 
+                width: "80%", 
                 margin: "auto",
                 marginTop: 30,
                 textAlign: "justify"

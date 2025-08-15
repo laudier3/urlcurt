@@ -197,11 +197,6 @@ const LandingPage: React.FC<Props> = ({ onLoginClick, onRegisterClick, onSobreCl
 
         <link rel="canonical" href="https://www.urlcurt.com.br/" />
       </Helmet>
-      <main>
-        <h1>como encurtar URL</h1>
-        <p>Transforme links longos em URLs curtas com segurança, praticidade e estatísticas em tempo real.</p>
-      </main>
-      
       <canvas
         ref={canvasRef}
         className="background"

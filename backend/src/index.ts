@@ -6,7 +6,7 @@ import { router } from './routes/routes';
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://www.urlcurt.site'], // produção + dev
+  origin: ['http://localhost:3000', 'url_de_producçaõ'], // produção + dev
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));

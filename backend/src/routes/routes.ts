@@ -405,7 +405,7 @@ router.post('/api/urls', authMiddleware, async (req: AuthRequest, res: any) => {
       } while (await prisma.url.findUnique({ where: { slug } }));
     }
 
-    const shortUrlFull = `${process.env.BASE_URL || 'https://urlcurt.site'}/${slug}`;
+    const shortUrlFull = `${process.env.BASE_URL}/${slug}`;
     const url = await prisma.url.create({
       data: { original: originalUrl, slug, shortUrl: shortUrlFull, userId },
     });
@@ -460,7 +460,7 @@ router.put('/api/urls/:id', authMiddleware, async (req: AuthRequest, res: any) =
       data: {
         original: originalUrl,
         slug: shortSlug,
-        shortUrl: `${process.env.BASE_URL || 'https://urlcurt.site'}/${shortSlug}`
+        shortUrl: `${process.env.BASE_URL}/${shortSlug}`
       },
     });
 
